@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پست جدید </title>
+<title>پست جدید — Maborai</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
@@ -565,7 +565,7 @@
     <div class="editor-body" id="editor-body" contenteditable="true"
       data-placeholder="متن پست خود را اینجا بنویسید… (حداقل ۱۰ کاراکتر)"
       spellcheck="false"></div>
-    <div class="char-counter" id="char-counter">۰ / ۲۰۰۰</div>
+    <div class="char-counter" id="char-counter">۰ / ۱۰۰۰</div>
   </div>
 
   <div class="field">
@@ -1051,7 +1051,7 @@ buildColorPicker({
 const charCounter = document.getElementById('char-counter');
 const MEDIA_WEIGHT = 10;
 const MIN_CHARS = 10;
-const MAX_CHARS = 2000;
+const MAX_CHARS = 1000; // <-- تغییر محدودیت به ۱۰۰۰
 
 function getEditorText() { return editor.innerText || ''; }
 function updateCounter() {
@@ -1435,7 +1435,7 @@ function showToast(msg, isError=false) {
   toastTimer = setTimeout(() => { t.className = 'toast'; }, 3500);
 }
 
-document.getElementById('btn-submit').addEventListener('click', async () => {
+document.getElementById('btn-submit').addEventListener('click', () => {
   const title        = document.getElementById('f-title').value.trim();
   const banner       = document.getElementById('f-banner').value.trim();
   const authorName   = getCookie('mabo_author');
@@ -1453,42 +1453,41 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
 
   const btn = document.getElementById('btn-submit');
   const lbl = document.getElementById('btn-label');
+
   try {
     btn.disabled = true;
     btn.classList.add('loading');
-    lbl.textContent = 'ارسال…';
+    lbl.textContent = 'در حال آماده‌سازی…';
 
-    const formData = new FormData();
-    formData.append('access_key', 'ba791533-8f31-4e44-9407-f5dc45b4d722');
-    formData.append('subject', 'پست جدید Maborai: ' + title);
-    formData.append('from_name', authorName);
-    formData.append('message',
-      'عنوان: ' + title +
-      (banner ? '\nبنر: ' + banner : '') +
-      '\nنویسنده: ' + authorName +
-      (authorAvatar ? '\nآواتار: ' + authorAvatar : '') +
-      '\nتاریخ: ' + date +
-      '\n\n--- محتوا (HTML) ---\n' + content
-    );
+    const subject = encodeURIComponent('پست جدید Maborai: ' + title);
+    const bodyText = 
+      'عنوان: ' + title + '\n' +
+      (banner ? 'بنر: ' + banner + '\n' : '') +
+      'نویسنده: ' + authorName + '\n' +
+      (authorAvatar ? 'آواتار: ' + authorAvatar + '\n' : '') +
+      'تاریخ: ' + date + '\n\n' +
+      '--- محتوا (HTML) ---\n' +
+      content;
+    
+    const body = encodeURIComponent(bodyText);
+    const mailtoLink = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+    
+    window.location.href = mailtoLink;
 
-    const w3res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: formData
-    });
-    const w3data = await w3res.json();
-    if (!w3data.success) throw new Error(w3data.message || 'خطا در ارسال');
-
-    showToast('پست ارسال شد! ✓');
+    showToast('برنامه ایمیل شما باز شد. لطفاً ایمیل را ارسال کنید. ✓');
     formDirty = false;
+    
     setTimeout(() => {
       document.getElementById('f-title').value = '';
       document.getElementById('f-banner').value = '';
-      editor.innerHTML = ''; updateCounter();
+      editor.innerHTML = ''; 
+      updateCounter();
     }, 2000);
   } catch(err) {
     showToast('خطا: ' + err.message, true);
   } finally {
-    btn.disabled = false; btn.classList.remove('loading');
+    btn.disabled = false; 
+    btn.classList.remove('loading');
     lbl.textContent = 'ارسال پست';
   }
 });
