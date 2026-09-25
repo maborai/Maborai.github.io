@@ -148,9 +148,7 @@ async function loadPosts() {
       });
 
     if (!res.ok) {
-      throw new Error(
-        'index.json not found'
-      );
+      throw new Error('index.json not found');
     }
 
     const data =
@@ -336,7 +334,7 @@ function renderPage() {
 
 
 /* =========================================================
-   BUILD POST CARD
+   BUILD POST
 ========================================================= */
 
 function buildCard(post) {
@@ -353,26 +351,13 @@ function buildCard(post) {
 
     bodyHtml =
       typeof DOMPurify !== 'undefined'
-
-        ? DOMPurify.sanitize(
-            post.content,
-            {
-              ADD_ATTR: [
-                'class',
-                'data-language',
-                'data-lang'
-              ]
-            }
-          )
-
+        ? DOMPurify.sanitize(post.content)
         : post.content;
 
   } else if (post.excerpt) {
 
     bodyHtml =
-      escapeHtml(
-        post.excerpt
-      );
+      escapeHtml(post.excerpt);
 
   }
 
@@ -429,7 +414,6 @@ function buildCard(post) {
 
         ${
           post.pinned
-
             ? `
               <svg
                 class="pin-icon"
@@ -440,10 +424,8 @@ function buildCard(post) {
               >
                 <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6Z"/>
               </svg>
-
               Pinned post
             `
-
             : formatDate(post.date)
         }
 
@@ -463,6 +445,7 @@ function buildCard(post) {
 
 /* =========================================================
    CODE BLOCKS
+   No syntax highlighting
 ========================================================= */
 
 function setupCodeBlocks(container) {
@@ -481,46 +464,13 @@ function setupCodeBlocks(container) {
 
 
     /* -----------------------------------------
-       Make line numbers work
+       Line numbers
     ----------------------------------------- */
 
-    pre.classList.add(
-      'line-numbers'
+    addLineNumbers(
+      pre,
+      code
     );
-
-
-    /* -----------------------------------------
-       Detect language
-    ----------------------------------------- */
-
-    let language =
-      getCodeLanguage(code);
-
-
-    if (language) {
-
-      const prismLanguage =
-        normalizeLanguage(language);
-
-      code.classList.add(
-        `language-${prismLanguage}`
-      );
-
-    }
-
-
-    /* -----------------------------------------
-       Syntax highlighting
-    ----------------------------------------- */
-
-    if (
-      typeof Prism !== 'undefined' &&
-      !code.querySelector('.token')
-    ) {
-
-      Prism.highlightElement(code);
-
-    }
 
 
     /* -----------------------------------------
@@ -549,7 +499,7 @@ function setupCodeBlocks(container) {
 
 
     /* -----------------------------------------
-       Code actions
+       Buttons
     ----------------------------------------- */
 
     if (
@@ -561,6 +511,9 @@ function setupCodeBlocks(container) {
 
       actions.className =
         'code-actions';
+
+
+      /* Copy */
 
       const copyButton =
         document.createElement('button');
@@ -588,6 +541,7 @@ function setupCodeBlocks(container) {
             height="13"
             rx="2"
           />
+
           <path
             d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
           />
@@ -607,36 +561,36 @@ function setupCodeBlocks(container) {
           const success =
             await copyText(text);
 
-          if (success) {
+          if (!success) return;
 
-            const oldHtml =
-              copyButton.innerHTML;
+          const oldHtml =
+            copyButton.innerHTML;
 
-            copyButton.innerHTML = `
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="m5 12 4 4L19 6"/>
-              </svg>
+          copyButton.innerHTML = `
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="m5 12 4 4L19 6"/>
+            </svg>
 
-              <span>Copied</span>
-            `;
+            <span>Copied</span>
+          `;
 
-            setTimeout(() => {
+          setTimeout(() => {
 
-              copyButton.innerHTML =
-                oldHtml;
+            copyButton.innerHTML =
+              oldHtml;
 
-            }, 1200);
-
-          }
+          }, 1200);
 
         }
       );
 
+
+      /* Download */
 
       const downloadButton =
         document.createElement('button');
@@ -672,10 +626,7 @@ function setupCodeBlocks(container) {
 
           downloadCode(
             code.textContent || '',
-            getCodeFilename(
-              language,
-              index
-            )
+            `code-${index + 1}.txt`
           );
 
         }
@@ -700,136 +651,50 @@ function setupCodeBlocks(container) {
 
 
 /* =========================================================
-   LANGUAGE
+   LINE NUMBERS
 ========================================================= */
 
-function getCodeLanguage(code) {
+function addLineNumbers(pre, code) {
 
-  const classes =
-    Array.from(
-      code.classList
+  if (
+    pre.querySelector('.line-number-list')
+  ) {
+    return;
+  }
+
+  const text =
+    code.textContent || '';
+
+  const lineCount =
+    Math.max(
+      1,
+      text.split('\n').length
     );
 
-  const languageClass =
-    classes.find(cls =>
-      cls.startsWith('language-') ||
-      cls.startsWith('lang-')
-    );
 
-  if (languageClass) {
+  const numbers =
+    document.createElement('div');
 
-    return languageClass
-      .replace(/^language-/, '')
-      .replace(/^lang-/, '')
-      .toLowerCase();
+  numbers.className =
+    'line-number-list';
+
+  for (
+    let i = 1;
+    i <= lineCount;
+    i++
+  ) {
+
+    const line =
+      document.createElement('span');
+
+    line.textContent =
+      i;
+
+    numbers.appendChild(line);
 
   }
 
-
-  const parent =
-    code.closest('pre');
-
-  if (parent) {
-
-    const dataLanguage =
-      parent.dataset.language ||
-      parent.dataset.lang;
-
-    if (dataLanguage) {
-      return dataLanguage.toLowerCase();
-    }
-
-  }
-
-  return '';
-
-}
-
-
-/* =========================================================
-   LANGUAGE NORMALIZER
-========================================================= */
-
-function normalizeLanguage(language) {
-
-  const map = {
-
-    js: 'javascript',
-    jsx: 'javascript',
-
-    ts: 'typescript',
-    tsx: 'typescript',
-
-    html: 'markup',
-    xml: 'markup',
-
-    md: 'markdown',
-
-    sh: 'bash',
-    shell: 'bash',
-
-    yml: 'yaml',
-
-    py: 'python',
-
-    rb: 'ruby',
-
-    cs: 'csharp',
-
-    cxx: 'cpp',
-    cc: 'cpp',
-
-    rs: 'rust'
-
-  };
-
-  return map[language] ||
-         language ||
-         'none';
-
-}
-
-
-/* =========================================================
-   FILENAME
-========================================================= */
-
-function getCodeFilename(
-  language,
-  index
-) {
-
-  const extensionMap = {
-
-    javascript: 'js',
-    typescript: 'ts',
-    markup: 'html',
-    css: 'css',
-    json: 'json',
-    python: 'py',
-    java: 'java',
-    c: 'c',
-    cpp: 'cpp',
-    csharp: 'cs',
-    php: 'php',
-    ruby: 'rb',
-    go: 'go',
-    rust: 'rs',
-    swift: 'swift',
-    kotlin: 'kt',
-    bash: 'sh',
-    sql: 'sql',
-    markdown: 'md',
-    yaml: 'yaml'
-
-  };
-
-  const ext =
-    extensionMap[
-      normalizeLanguage(language)
-    ] || 'txt';
-
-  return `code-${index + 1}.${ext}`;
+  pre.appendChild(numbers);
 
 }
 
@@ -895,9 +760,7 @@ function fallbackCopy(text) {
     textarea.select();
 
     const success =
-      document.execCommand(
-        'copy'
-      );
+      document.execCommand('copy');
 
     textarea.remove();
 
@@ -951,9 +814,7 @@ function downloadCode(
 
   setTimeout(() => {
 
-    URL.revokeObjectURL(
-      url
-    );
+    URL.revokeObjectURL(url);
 
   }, 1000);
 
@@ -1000,8 +861,7 @@ if (nextBtn) {
         );
 
       if (
-        currentPage <
-        totalPages
+        currentPage < totalPages
       ) {
 
         currentPage++;
@@ -1060,13 +920,9 @@ function applyFilters() {
 
       const matchesDate =
         !dateVal ||
-
         (
           post.date &&
-          post.date.slice(
-            0,
-            10
-          ) === dateVal
+          post.date.slice(0, 10) === dateVal
         );
 
 
