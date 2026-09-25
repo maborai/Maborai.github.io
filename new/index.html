@@ -1501,23 +1501,6 @@ function showToast(msg, isError=false) {
 }
 
 /* ══════════════════════════════════════════════
-   JSONBIN HELPER
-══════════════════════════════════════════════ */
-async function createBin(title, postData) {
-  const res = await fetch('https://api.jsonbin.io/v3/b', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Bin-Name': title,
-      'X-Bin-Private': 'false'
-    },
-    body: JSON.stringify([postData])
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'خطا در ساخت bin');
-  return `https://api.jsonbin.io/v3/b/${data.metadata.id}`;
-}
-
 /* ══════════════════════════════════════════════
    SUBMIT
 ══════════════════════════════════════════════ */
@@ -1538,23 +1521,19 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
 
   const btn = document.getElementById('btn-submit');
   const lbl = document.getElementById('btn-label');
-  btn.disabled = true; btn.classList.add('loading');
-
   try {
-    const date     = new Date().toISOString().slice(0,10);
-    const postData = { title, banner, content, authorName, authorAvatar, date, pinned: false };
-
-    lbl.textContent = 'آپلود…';
-    const binUrl = await createBin(title, postData);
-
-    /* ── Web3Forms ── */
-    lbl.textContent = 'ارسال ایمیل…';
+    lbl.textContent = 'ارسال…';
     const formData = new FormData();
     formData.append('access_key', 'ba791533-8f31-4e44-9407-f5dc45b4d722');
     formData.append('subject', `پست جدید Maborai: ${title}`);
     formData.append('from_name', authorName);
     formData.append('message',
-      `نویسنده: ${authorName}\nتاریخ: ${date}\n\nلینک JSONBin:\n${binUrl}`
+      `عنوان: ${title}` +
+      (banner ? `\nبنر: ${banner}` : '') +
+      `\nنویسنده: ${authorName}` +
+      (authorAvatar ? `\nآواتار: ${authorAvatar}` : '') +
+      `\nتاریخ: ${date}` +
+      `\n\n--- محتوا ---\n${content}`
     );
 
     const w3res = await fetch('https://api.web3forms.com/submit', {
@@ -1562,7 +1541,7 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
       body: formData
     });
     const w3data = await w3res.json();
-    if (!w3data.success) throw new Error(w3data.message || 'خطا در ارسال ایمیل');
+    if (!w3data.success) throw new Error(w3data.message || 'خطا در ارسال');
 
     showToast('پست ارسال شد! ✓');
     formDirty = false;
