@@ -44,7 +44,9 @@ body{
   background:var(--bg);
   color:var(--text);
   font-family:var(--font-en);
-  transition:background .15s ease,color .15s ease;
+  transition:
+    background .15s ease,
+    color .15s ease;
 }
 
 img{
@@ -84,8 +86,9 @@ button{
 }
 
 .brand img{
-  height:30px;
   width:30px;
+  height:30px;
+  object-fit:contain;
 }
 
 .brand-name{
@@ -258,6 +261,8 @@ button{
 }
 
 .post-body img{
+  max-width:100%;
+  height:auto;
   border-radius:var(--radius);
   margin:14px 0;
 }
@@ -280,6 +285,9 @@ button{
 .post-body video{
   background:#000;
 }
+
+
+/* HEADINGS */
 
 .post-body h1,
 .post-body h2,
@@ -321,6 +329,65 @@ button{
   font-size:14px;
   margin:16px 0 5px;
   color:var(--text-dim);
+}
+
+
+/* POST META */
+
+.post-footer{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.post-meta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.author-avatar{
+  width:30px !important;
+  height:30px !important;
+  min-width:30px;
+  max-width:30px !important;
+  min-height:30px;
+  max-height:30px !important;
+
+  display:block;
+
+  object-fit:cover;
+  object-position:center;
+
+  border-radius:50% !important;
+
+  background:var(--bg-raised);
+
+  overflow:hidden;
+
+  flex:0 0 30px;
+
+  aspect-ratio:1 / 1;
+}
+
+.author-name{
+  font-size:13px;
+  font-weight:500;
+}
+
+.post-date{
+  font-size:13px;
+  color:var(--text-faint);
+  margin-inline-start:auto;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.pin-icon{
+  width:13px;
+  height:13px;
 }
 
 
@@ -378,19 +445,25 @@ button{
 }
 
 
-/* CODE BLOCK */
+/* CODE */
 
 .post-body pre{
   position:relative;
   direction:ltr;
   text-align:left;
+
   margin:22px 0;
   padding:48px 0 0;
+
   background:#0d0f12;
+
   border:1px solid #252a30;
   border-radius:10px;
+
   overflow:auto;
+
   color:#e6edf3;
+
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -399,8 +472,10 @@ button{
     Consolas,
     "Liberation Mono",
     monospace;
+
   font-size:13px;
   line-height:1.75;
+
   box-shadow:
     0 10px 30px rgba(0,0,0,.18),
     inset 0 1px rgba(255,255,255,.025);
@@ -408,37 +483,57 @@ button{
 
 .post-body pre::before{
   content:"";
+
   position:absolute;
+
   top:0;
   left:0;
   right:0;
+
   height:46px;
+
   background:#11151a;
+
   border-bottom:1px solid #252a30;
+
   z-index:1;
 }
 
 .post-body pre::after{
   content:"CODE";
+
   position:absolute;
+
   top:15px;
   left:74px;
+
   color:#6e7681;
+
   font-family:var(--font-en);
+
   font-size:10px;
   font-weight:700;
+
   letter-spacing:1.2px;
+
   z-index:2;
 }
 
 .post-body pre code{
   display:block;
+
   overflow-x:auto;
+
   padding:14px 18px 18px 58px;
+
   min-height:50px;
+
   white-space:pre;
+
   tab-size:2;
+
   color:#e6edf3;
+
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -447,84 +542,12 @@ button{
     Consolas,
     "Liberation Mono",
     monospace;
+
   font-size:13px;
+
   line-height:1.75;
+
   background:transparent;
-}
-
-
-/* CODE DOTS */
-
-.post-body pre .code-dots{
-  position:absolute;
-  top:16px;
-  left:18px;
-  display:flex;
-  gap:6px;
-  z-index:3;
-}
-
-.post-body pre .code-dots span{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  display:block;
-}
-
-.post-body pre .code-dots span:nth-child(1){
-  background:#ff5f57;
-}
-
-.post-body pre .code-dots span:nth-child(2){
-  background:#febc2e;
-}
-
-.post-body pre .code-dots span:nth-child(3){
-  background:#28c840;
-}
-
-
-/* CODE ACTIONS */
-
-.code-actions{
-  position:absolute;
-  top:8px;
-  right:10px;
-  display:flex;
-  align-items:center;
-  gap:5px;
-  z-index:4;
-}
-
-.code-action{
-  height:29px;
-  padding:0 9px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-  border:1px solid #30363d;
-  border-radius:5px;
-  background:#171b21;
-  color:#8b949e;
-  font-family:var(--font-fa);
-  font-size:11px;
-  cursor:pointer;
-  transition:
-    background .15s ease,
-    color .15s ease,
-    border-color .15s ease;
-}
-
-.code-action:hover{
-  background:#21262d;
-  border-color:#484f58;
-  color:#e6edf3;
-}
-
-.code-action svg{
-  width:13px;
-  height:13px;
 }
 
 
@@ -532,23 +555,36 @@ button{
 
 .post-body pre .line-number-list{
   position:absolute;
+
   top:62px;
   left:0;
+
   width:44px;
+
   padding-right:10px;
+
   border-right:1px solid #252a30;
+
   pointer-events:none;
+
   user-select:none;
+
   z-index:2;
 }
 
 .post-body pre .line-number-list span{
   display:block;
+
   height:22.75px;
+
   line-height:22.75px;
+
   color:#484f58;
+
   text-align:right;
+
   font-size:12px;
+
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -556,26 +592,6 @@ button{
     Monaco,
     Consolas,
     monospace;
-}
-
-
-/* CODE SCROLLBAR */
-
-.post-body pre code::-webkit-scrollbar{
-  height:7px;
-}
-
-.post-body pre code::-webkit-scrollbar-track{
-  background:transparent;
-}
-
-.post-body pre code::-webkit-scrollbar-thumb{
-  background:#30363d;
-  border-radius:999px;
-}
-
-.post-body pre code::-webkit-scrollbar-thumb:hover{
-  background:#484f58;
 }
 
 
@@ -624,10 +640,6 @@ button{
 
 .post-body tbody tr:hover{
   background:var(--bg);
-}
-
-.post-body table code{
-  font-size:12px;
 }
 
 
@@ -699,58 +711,6 @@ button{
   height:1px;
   background:var(--border);
   margin:28px 0;
-}
-
-
-/* FIGURE */
-
-.post-body figure{
-  margin:20px 0;
-}
-
-.post-body figcaption{
-  font-family:var(--font-fa);
-  font-size:12px;
-  color:var(--text-faint);
-  text-align:center;
-  margin-top:7px;
-}
-
-
-/* PAGER */
-
-.pager{
-  max-width:760px;
-  margin:0 auto;
-  padding:0 24px 80px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:16px;
-}
-
-.pager-btn{
-  background:var(--bg-raised);
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:8px 18px;
-  border-radius:var(--radius);
-  font-size:14px;
-  transition:opacity .15s ease;
-}
-
-.pager-btn:disabled{
-  opacity:.4;
-  cursor:default;
-}
-
-.pager-btn:not(:disabled):hover{
-  opacity:.85;
-}
-
-.pager-label{
-  font-size:13px;
-  color:var(--text-faint);
 }
 
 
@@ -852,23 +812,18 @@ input:focus-visible{
     padding-right:7px;
   }
 
-  .code-actions{
-    right:7px;
-  }
-
-  .code-action{
-    width:29px;
-    padding:0;
-  }
-
-  .code-action span{
-    display:none;
-  }
-
   .post-body table{
     display:block;
     overflow-x:auto;
     white-space:nowrap;
+  }
+
+  .author-avatar{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px;
+    max-width:30px !important;
+    flex-basis:30px;
   }
 
 }
