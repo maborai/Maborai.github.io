@@ -744,7 +744,6 @@
 /* ══════════════════════════════════════════════
    CONFIG
 ══════════════════════════════════════════════ */
-const GIST_TOKEN  = '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';
 const ADMIN_EMAIL = 'Maborai.sp@gmail.com';
 
 /* ── Theme ── */
@@ -1559,14 +1558,12 @@ async function createGist(title, postData) {
   const res = await fetch('https://api.github.com/gists', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${GIST_TOKEN}`,
       'Content-Type': 'application/json',
-      'User-Agent': 'Maborai-Blog',
       'X-GitHub-Api-Version': '2022-11-28',
     },
     body: JSON.stringify({
       description: `پست جدید Maborai: ${title}`,
-      public: false,
+      public: true,
       files: {
         'post.json': {
           content: JSON.stringify([postData], null, 2)
