@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پست جدید — Maborai</title>
+<title>پست جدید </title>
 <link rel="stylesheet" href="../style.css">
 <script>
   (function(){
@@ -13,7 +13,6 @@
   })();
 </script>
 <style>
-  /* ── Editor page layout ── */
   .editor-wrap {
     max-width: 760px;
     margin: 0 auto;
@@ -31,7 +30,6 @@
     color: var(--text);
   }
 
-  /* ── Field groups ── */
   .field {
     display: flex;
     flex-direction: column;
@@ -72,7 +70,6 @@
   .field-input:focus { border-color: var(--text-dim); }
   .field-input::placeholder { color: var(--text-faint); }
 
-  /* ── Toolbar ── */
   .editor-toolbar {
     display: flex;
     flex-wrap: wrap;
@@ -141,7 +138,6 @@
     font-weight: 700;
   }
 
-  /* highlight */
   .tb-highlight-wrap {
     position: relative;
     width: 32px;
@@ -171,7 +167,6 @@
     border-radius: 2px;
   }
 
-  /* ── Editable area ── */
   .editor-body {
     min-height: 260px;
     max-height: 520px;
@@ -221,7 +216,6 @@
   }
   .editor-body a { text-decoration: underline; text-underline-offset: 2px; }
 
-  /* char counter */
   .char-counter {
     font-family: var(--font-fa);
     font-size: 12px;
@@ -232,7 +226,6 @@
   .char-counter.warn { color: #e07b39; }
   .char-counter.over { color: #e03939; }
 
-  /* ── Modal (link / media / embed) ── */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -313,17 +306,6 @@
   }
   .btn-insert:hover { opacity: .85; }
 
-  /* ── Bypass code row ── */
-  .bypass-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .bypass-row .field-input {
-    flex: 1;
-  }
-
-  /* ── Submit button ── */
   .btn-submit {
     align-self: flex-start;
     background: var(--text);
@@ -355,7 +337,6 @@
   .btn-submit.loading .submit-spinner { display: block; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── Toast ── */
   .toast {
     position: fixed;
     bottom: 32px;
@@ -391,7 +372,6 @@
 </head>
 <body>
 
-  <!-- Header -->
   <header class="site-header">
     <a href="https://maborai.github.io" class="brand">
       <img id="logo-img" src="../logo-dark.png" alt="Maborai">
@@ -403,17 +383,15 @@
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
       </button>
       <a href="https://maborai.github.io" class="btn-new" title="بازگشت" aria-label="بازگشت">
-        <span>بازگشت</span>
+        <span>Home</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5Z"/><path d="M9 21V12h6v9"/></svg>
       </a>
     </div>
   </header>
 
-  <!-- Editor -->
   <div class="editor-wrap">
     <h1 class="editor-page-title">پست جدید</h1>
 
-    <!-- Title -->
     <div class="field">
       <label class="field-label" for="f-title">
         عنوان مطلب <span class="required">*</span>
@@ -421,7 +399,6 @@
       <input class="field-input" id="f-title" type="text" placeholder="عنوان پست خود را بنویسید…" maxlength="120" autocomplete="off">
     </div>
 
-    <!-- Banner -->
     <div class="field">
       <label class="field-label" for="f-banner">
         بنر مطلب <span class="optional">(اختیاری)</span>
@@ -429,16 +406,12 @@
       <input class="field-input" id="f-banner" type="url" placeholder="لینک مستقیم تصویر بنر…" autocomplete="off">
     </div>
 
-    <!-- Rich text editor -->
     <div class="field">
       <label class="field-label">
         متن مطلب <span class="required">*</span>
       </label>
 
-      <!-- Toolbar -->
       <div class="editor-toolbar" role="toolbar" aria-label="ابزارهای ویرایش">
-
-        <!-- Alignment -->
         <button class="tb-btn" data-cmd="justifyRight" title="راست‌چین">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M9 12h12M3 18h18"/></svg>
         </button>
@@ -451,7 +424,6 @@
 
         <div class="tb-sep"></div>
 
-        <!-- Format -->
         <button class="tb-btn" data-cmd="bold" title="بولد" style="font-weight:800">B</button>
         <button class="tb-btn" data-cmd="italic" title="ایتالیک" style="font-style:italic">I</button>
         <button class="tb-btn" data-cmd="underline" title="زیرخط" style="text-decoration:underline">U</button>
@@ -459,13 +431,11 @@
 
         <div class="tb-sep"></div>
 
-        <!-- Color -->
         <div class="tb-color-wrap" title="رنگ متن">
           <span class="tb-color-icon">A</span>
           <input class="tb-color-input" type="color" id="tb-text-color" value="#e07b39">
         </div>
 
-        <!-- Highlight -->
         <div class="tb-highlight-wrap" title="هایلایت">
           <span class="tb-highlight-icon">H</span>
           <input class="tb-highlight-input" type="color" id="tb-highlight-color" value="#ffe066">
@@ -473,7 +443,6 @@
 
         <div class="tb-sep"></div>
 
-        <!-- Blocks -->
         <button class="tb-btn" id="btn-quote" title="نقل‌قول">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6c0 5 3 8 7 8Zm10 0c3 0 7-1 7-8V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6c0 5 3 8 7 8Z"/></svg>
         </button>
@@ -483,29 +452,23 @@
 
         <div class="tb-sep"></div>
 
-        <!-- Link -->
         <button class="tb-btn" id="btn-link" title="لینک">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
         </button>
 
-        <!-- Image URL -->
         <button class="tb-btn" id="btn-image" title="تصویر / گیف با URL">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
         </button>
 
-        <!-- Video URL -->
         <button class="tb-btn" id="btn-video" title="ویدیو با URL مستقیم">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
         </button>
 
-        <!-- Embed -->
         <button class="tb-btn" id="btn-embed" title="امبد (Spotify, YouTube, …)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </button>
-
       </div>
 
-      <!-- Contenteditable -->
       <div
         class="editor-body"
         id="editor-body"
@@ -516,7 +479,6 @@
       <div class="char-counter" id="char-counter">۰ / ۱۰۰۰</div>
     </div>
 
-    <!-- Author name -->
     <div class="field">
       <label class="field-label" for="f-author">
         اسم نویسنده <span class="required">*</span>
@@ -524,7 +486,6 @@
       <input class="field-input" id="f-author" type="text" placeholder="نام نمایشی شما…" maxlength="60" autocomplete="off">
     </div>
 
-    <!-- Author avatar -->
     <div class="field">
       <label class="field-label" for="f-avatar">
         پروفایل نویسنده <span class="optional">(اختیاری)</span>
@@ -532,15 +493,6 @@
       <input class="field-input" id="f-avatar" type="url" placeholder="لینک مستقیم تصویر پروفایل…" autocomplete="off">
     </div>
 
-    <!-- Bypass code -->
-    <div class="field">
-      <label class="field-label" for="f-bypass">
-        کد انتشار فوری <span class="optional">(اختیاری — بدون بررسی منتشر می‌شود)</span>
-      </label>
-      <input class="field-input" id="f-bypass" type="password" placeholder="کد ۱۲ رقمی…" autocomplete="off">
-    </div>
-
-    <!-- Submit -->
     <button class="btn-submit" id="btn-submit">
       <span id="btn-label">ارسال پست</span>
       <span class="submit-spinner" id="submit-spinner"></span>
@@ -548,7 +500,6 @@
 
   </div>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <nav class="footer-links">
       <a href="/about">درباره اینجا</a>
@@ -560,9 +511,7 @@
     هیچ اطلاعاتی از شما ذخیره نمی‌شه، اگه شک دارید <a href="https://github.com/maborai/Maborai.github.io" target="_blank" rel="noopener">سورس</a> های این پلتفرم رو بررسی کنید.</p>
   </footer>
 
-  <!-- ── Modals ── -->
-
-  <!-- Link modal -->
+  <!-- Modals -->
   <div class="modal-overlay hidden" id="modal-link">
     <div class="modal">
       <h2 class="modal-title">افزودن لینک</h2>
@@ -574,7 +523,6 @@
     </div>
   </div>
 
-  <!-- Image modal -->
   <div class="modal-overlay hidden" id="modal-image">
     <div class="modal">
       <h2 class="modal-title">درج تصویر / گیف</h2>
@@ -587,7 +535,6 @@
     </div>
   </div>
 
-  <!-- Video modal -->
   <div class="modal-overlay hidden" id="modal-video">
     <div class="modal">
       <h2 class="modal-title">درج ویدیو</h2>
@@ -599,7 +546,6 @@
     </div>
   </div>
 
-  <!-- Embed modal -->
   <div class="modal-overlay hidden" id="modal-embed">
     <div class="modal">
       <h2 class="modal-title">درج امبد</h2>
@@ -611,10 +557,14 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <script>
+  /* ── Config ── */
+  const GITHUB_TOKEN = 'YOUR_TOKEN_HERE'; // توکن رو اینجا جایگزین کنید
+  const REPO         = 'maborai/Maborai.github.io';
+  const BASE_BRANCH  = 'main';
+
   /* ── Theme ── */
   const root = document.documentElement;
   const logoImg = document.getElementById('logo-img');
@@ -631,43 +581,23 @@
   });
 
   /* ── Editor ── */
-  const editor = document.getElementById('editor-body');
+  const editor      = document.getElementById('editor-body');
   const charCounter = document.getElementById('char-counter');
-  const WORKER_URL = 'https://maborai-api.muse-niiik.workers.dev/';
-
-  // Media/embed = 10 chars each
   const MEDIA_WEIGHT = 10;
 
-  function getEditorText() {
-    // plain text from editor
-    return editor.innerText || '';
-  }
-
-  function countChars() {
-    let count = 0;
-    // Count text nodes
-    count += getEditorText().length;
-    // Count media elements (img, video, iframe) each as 10
-    const mediaEls = editor.querySelectorAll('img, video, iframe');
-    count += mediaEls.length * MEDIA_WEIGHT;
-    // Subtract real length of media placeholders (they don't have text but innerText might count newlines)
-    // Actually innerText includes newlines from block elements so subtract those extra
-    return count;
-  }
+  function getEditorText() { return editor.innerText || ''; }
 
   function updateCounter() {
-    const raw = getEditorText().replace(/\n/g, '').length;
+    const raw        = getEditorText().replace(/\n/g, '').length;
     const mediaCount = editor.querySelectorAll('img, video, iframe').length * MEDIA_WEIGHT;
-    const total = raw + mediaCount;
-
-    const toFarsi = n => n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const total      = raw + mediaCount;
+    const toFarsi    = n => n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
     charCounter.textContent = `${toFarsi(total)} / ۱۰۰۰`;
-    charCounter.className = 'char-counter' + (total > 1000 ? ' over' : total > 800 ? ' warn' : '');
+    charCounter.className   = 'char-counter' + (total > 1000 ? ' over' : total > 800 ? ' warn' : '');
   }
-
   editor.addEventListener('input', updateCounter);
 
-  /* ── Toolbar commands ── */
+  /* ── Toolbar ── */
   document.querySelectorAll('[data-cmd]').forEach(btn => {
     btn.addEventListener('mousedown', e => {
       e.preventDefault();
@@ -676,33 +606,29 @@
     });
   });
 
-  // Quote
   document.getElementById('btn-quote').addEventListener('mousedown', e => {
     e.preventDefault();
     document.execCommand('formatBlock', false, 'blockquote');
     editor.focus();
   });
 
-  // Code block
   document.getElementById('btn-code').addEventListener('mousedown', e => {
     e.preventDefault();
     document.execCommand('formatBlock', false, 'pre');
     editor.focus();
   });
 
-  // Text color
   document.getElementById('tb-text-color').addEventListener('input', function() {
     document.execCommand('foreColor', false, this.value);
     editor.focus();
   });
 
-  // Highlight
   document.getElementById('tb-highlight-color').addEventListener('input', function() {
     document.execCommand('hiliteColor', false, this.value);
     editor.focus();
   });
 
-  /* ── Saved selection for modals ── */
+  /* ── Saved selection ── */
   let savedRange = null;
   function saveSelection() {
     const sel = window.getSelection();
@@ -714,15 +640,13 @@
     sel.removeAllRanges();
     sel.addRange(savedRange);
   }
-
   editor.addEventListener('mouseup', saveSelection);
   editor.addEventListener('keyup', saveSelection);
 
-  /* ── Modal helpers ── */
-  function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+  /* ── Modals ── */
+  function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
   function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-  /* ── Link modal ── */
   document.getElementById('btn-link').addEventListener('click', () => {
     saveSelection();
     document.getElementById('link-url').value = '';
@@ -735,13 +659,11 @@
     if (!url) return;
     restoreSelection();
     document.execCommand('createLink', false, url);
-    // make links open in new tab
     editor.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
     closeModal('modal-link');
     updateCounter();
   });
 
-  /* ── Image modal ── */
   document.getElementById('btn-image').addEventListener('click', () => {
     saveSelection();
     document.getElementById('image-url').value = '';
@@ -751,7 +673,7 @@
   });
   document.getElementById('image-cancel').addEventListener('click', () => closeModal('modal-image'));
   document.getElementById('image-insert').addEventListener('click', () => {
-    const src = document.getElementById('image-url').value.trim();
+    const src  = document.getElementById('image-url').value.trim();
     const href = document.getElementById('image-link').value.trim();
     if (!src) return;
     restoreSelection();
@@ -762,7 +684,6 @@
     updateCounter();
   });
 
-  /* ── Video modal ── */
   document.getElementById('btn-video').addEventListener('click', () => {
     saveSelection();
     document.getElementById('video-url').value = '';
@@ -780,7 +701,6 @@
     updateCounter();
   });
 
-  /* ── Embed modal ── */
   document.getElementById('btn-embed').addEventListener('click', () => {
     saveSelection();
     document.getElementById('embed-url').value = '';
@@ -789,7 +709,7 @@
   });
   document.getElementById('embed-cancel').addEventListener('click', () => closeModal('modal-embed'));
   document.getElementById('embed-insert').addEventListener('click', () => {
-    const url = document.getElementById('embed-url').value.trim();
+    const url    = document.getElementById('embed-url').value.trim();
     if (!url) return;
     const iframe = buildEmbed(url);
     if (!iframe) { showToast('لینک پشتیبانی نمی‌شود.', true); return; }
@@ -800,19 +720,14 @@
   });
 
   function buildEmbed(url) {
-    // YouTube
     let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
     if (m) return `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${m[1]}" frameborder="0" allowfullscreen style="border-radius:4px;margin:8px 0;display:block"></iframe>`;
-    // Spotify track/album/playlist
     m = url.match(/open\.spotify\.com\/(track|album|playlist|episode)\/([A-Za-z0-9]+)/);
     if (m) return `<iframe src="https://open.spotify.com/embed/${m[1]}/${m[2]}" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" style="border-radius:12px;margin:8px 0;display:block"></iframe>`;
-    // SoundCloud
     if (url.includes('soundcloud.com')) return `<iframe width="100%" height="166" src="https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ff5500" frameborder="0" style="margin:8px 0;display:block"></iframe>`;
-    // Generic iframe fallback
     return `<iframe src="${escAttr(url)}" width="100%" height="315" frameborder="0" allowfullscreen style="border-radius:4px;margin:8px 0;display:block"></iframe>`;
   }
 
-  /* ── Close modals on overlay click ── */
   ['modal-link','modal-image','modal-video','modal-embed'].forEach(id => {
     document.getElementById(id).addEventListener('click', function(e) {
       if (e.target === this) closeModal(id);
@@ -829,21 +744,97 @@
     toastTimer = setTimeout(() => { t.className = 'toast'; }, 3500);
   }
 
+  /* ── GitHub helpers ── */
+  const GH_HEADERS = {
+    'Authorization': `Bearer ${GITHUB_TOKEN}`,
+    'Content-Type': 'application/json',
+    'User-Agent': 'Maborai-Blog',
+  };
+
+  // ۱. fork بساز (اگه قبلاً وجود داشت همونو برمیگردونه)
+  async function ensureFork() {
+    const res  = await fetch(`https://api.github.com/repos/${REPO}/forks`, {
+      method: 'POST',
+      headers: GH_HEADERS,
+      body: JSON.stringify({}),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'خطا در ساخت fork');
+    return data.full_name; // مثلاً: maborai-bot/Maborai.github.io
+  }
+
+  // ۲. index.json رو از fork بخون
+  async function getIndexFromFork(forkRepo) {
+    // اول fork رو با main sync کن
+    await fetch(`https://api.github.com/repos/${forkRepo}/merge-upstream`, {
+      method: 'POST',
+      headers: GH_HEADERS,
+      body: JSON.stringify({ branch: 'main' }),
+    });
+
+    const res  = await fetch(`https://api.github.com/repos/${forkRepo}/contents/index.json`, { headers: GH_HEADERS });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'خطا در خواندن index.json');
+    const posts = JSON.parse(atob(data.content.replace(/\n/g, '')));
+    return { posts, sha: data.sha };
+  }
+
+  // ۳. index.json رو توی fork آپدیت کن
+  async function updateIndexInFork(forkRepo, posts, sha, branchName, commitMsg) {
+    // branch جدید توی fork بساز
+    const refRes  = await fetch(`https://api.github.com/repos/${forkRepo}/git/ref/heads/main`, { headers: GH_HEADERS });
+    const refData = await refRes.json();
+    if (!refRes.ok) throw new Error(refData.message || 'خطا در دریافت SHA');
+
+    await fetch(`https://api.github.com/repos/${forkRepo}/git/refs`, {
+      method: 'POST',
+      headers: GH_HEADERS,
+      body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha: refData.object.sha }),
+    });
+
+    // فایل رو توی اون branch بنویس
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2))));
+    const res = await fetch(`https://api.github.com/repos/${forkRepo}/contents/index.json`, {
+      method: 'PUT',
+      headers: GH_HEADERS,
+      body: JSON.stringify({ message: commitMsg, content: encoded, sha, branch: branchName }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'خطا در آپدیت index.json');
+  }
+
+  // ۴. PR از fork به ریپوی اصلی باز کن
+  async function openPR(forkRepo, branchName, title, body) {
+    const forkOwner = forkRepo.split('/')[0];
+    const res = await fetch(`https://api.github.com/repos/${REPO}/pulls`, {
+      method: 'POST',
+      headers: GH_HEADERS,
+      body: JSON.stringify({
+        title,
+        head: `${forkOwner}:${branchName}`,
+        base: 'main',
+        body,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'خطا در باز کردن PR');
+    return data.html_url;
+  }
+
   /* ── Submit ── */
   document.getElementById('btn-submit').addEventListener('click', async () => {
-    const title      = document.getElementById('f-title').value.trim();
-    const banner     = document.getElementById('f-banner').value.trim();
-    const authorName = document.getElementById('f-author').value.trim();
+    const title        = document.getElementById('f-title').value.trim();
+    const banner       = document.getElementById('f-banner').value.trim();
+    const authorName   = document.getElementById('f-author').value.trim();
     const authorAvatar = document.getElementById('f-avatar').value.trim();
-    const bypassCode = document.getElementById('f-bypass').value.trim();
-    const content    = editor.innerHTML.trim();
-    const plainText  = getEditorText().replace(/\n/g, '').length;
-    const mediaCount = editor.querySelectorAll('img, video, iframe').length * MEDIA_WEIGHT;
-    const totalChars = plainText + mediaCount;
+    const content      = editor.innerHTML.trim();
+    const plainText    = getEditorText().replace(/\n/g, '').length;
+    const mediaCount   = editor.querySelectorAll('img, video, iframe').length * MEDIA_WEIGHT;
+    const totalChars   = plainText + mediaCount;
 
-    if (!title)       { showToast('عنوان مطلب را وارد کنید.', true); return; }
-    if (!authorName)  { showToast('اسم نویسنده را وارد کنید.', true); return; }
-    if (plainText < 100) { showToast('متن مطلب باید حداقل ۱۰۰ کاراکتر باشد.', true); return; }
+    if (!title)            { showToast('عنوان مطلب را وارد کنید.', true); return; }
+    if (!authorName)       { showToast('اسم نویسنده را وارد کنید.', true); return; }
+    if (plainText < 100)   { showToast('متن مطلب باید حداقل ۱۰۰ کاراکتر باشد.', true); return; }
     if (totalChars > 1000) { showToast('متن مطلب از ۱۰۰۰ کاراکتر بیشتر است.', true); return; }
 
     const btn = document.getElementById('btn-submit');
@@ -853,35 +844,42 @@
     lbl.textContent = 'در حال ارسال…';
 
     try {
-      const res = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          banner,
-          content,
-          authorName,
-          authorAvatar,
-          bypassCode: bypassCode || undefined,
-          date: new Date().toISOString().slice(0, 10),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || 'خطای ناشناخته');
+      const date       = new Date().toISOString().slice(0, 10);
+      const branchName = `post-${Date.now()}`;
+      const postData   = { title, banner, content, authorName, authorAvatar, date, pinned: false };
 
-      if (data.published) {
-        showToast('پست منتشر شد! 🎉');
-      } else {
-        showToast('پست ارسال شد و منتظر بررسی است.');
-      }
+      // ۱. fork بساز یا پیدا کن
+      lbl.textContent = 'آماده‌سازی…';
+      const forkRepo = await ensureFork();
 
-      // Reset form
+      // کمی صبر کن تا fork آماده بشه
+      await new Promise(r => setTimeout(r, 3000));
+
+      // ۲. index.json رو از fork بخون
+      lbl.textContent = 'در حال بارگذاری…';
+      const { posts, sha } = await getIndexFromFork(forkRepo);
+
+      // ۳. پست جدید رو اضافه کن و توی fork بنویس
+      posts.unshift(postData);
+      lbl.textContent = 'در حال ارسال…';
+      await updateIndexInFork(forkRepo, posts, sha, branchName, `پست جدید: ${title}`);
+
+      // ۴. PR باز کن
+      await openPR(
+        forkRepo,
+        branchName,
+        `پست جدید: ${title}`,
+        `**نویسنده:** ${authorName}\n**تاریخ:** ${date}`
+      );
+
+      showToast('پست ارسال شد و منتظر بررسی است ✓');
+
+      // Reset
       setTimeout(() => {
-        document.getElementById('f-title').value = '';
+        document.getElementById('f-title').value  = '';
         document.getElementById('f-banner').value = '';
         document.getElementById('f-author').value = '';
         document.getElementById('f-avatar').value = '';
-        document.getElementById('f-bypass').value = '';
         editor.innerHTML = '';
         updateCounter();
       }, 1500);
