@@ -30,11 +30,7 @@
     color: var(--text);
   }
 
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .field { display: flex; flex-direction: column; gap: 8px; }
 
   .field-label {
     font-family: var(--font-fa);
@@ -42,17 +38,8 @@
     font-weight: 600;
     color: var(--text-dim);
   }
-
-  .field-label .optional {
-    font-weight: 400;
-    color: var(--text-faint);
-    margin-right: 4px;
-  }
-
-  .field-label .required {
-    color: var(--text);
-    margin-right: 2px;
-  }
+  .field-label .optional { font-weight: 400; color: var(--text-faint); margin-right: 4px; }
+  .field-label .required { color: var(--text); margin-right: 2px; }
 
   .field-input {
     background: var(--bg-raised);
@@ -70,11 +57,67 @@
   .field-input:focus { border-color: var(--text-dim); }
   .field-input::placeholder { color: var(--text-faint); }
 
+  /* ── Profile row ── */
+  .profile-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .profile-avatar-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--border);
+    flex-shrink: 0;
+    display: none;
+  }
+  .profile-avatar-preview.show { display: block; }
+  .profile-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .profile-name-display {
+    font-family: var(--font-fa);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .profile-name-display.empty { color: var(--text-faint); }
+  .btn-save-profile {
+    background: var(--text);
+    border: none;
+    color: var(--bg);
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-family: var(--font-fa);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .btn-save-profile:hover { opacity: .85; }
+  .btn-edit-profile {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: var(--font-fa);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .btn-edit-profile:hover { background: var(--border); }
+
+  /* ── Toolbar ── */
   .editor-toolbar {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    padding: 8px;
+    gap: 3px;
+    padding: 6px 8px;
     background: var(--bg-raised);
     border: 1px solid var(--border);
     border-bottom: none;
@@ -85,14 +128,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    min-width: 32px;
+    height: 30px;
+    padding: 0 6px;
     border: none;
     background: transparent;
     border-radius: var(--radius);
     color: var(--text-dim);
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     font-family: var(--font-en);
     cursor: pointer;
     transition: background .12s ease, color .12s ease;
@@ -100,20 +144,34 @@
   }
   .tb-btn:hover { background: var(--border); color: var(--text); }
   .tb-btn.active { background: var(--border); color: var(--text); }
-  .tb-btn svg { width: 15px; height: 15px; pointer-events: none; }
+  .tb-btn svg { width: 14px; height: 14px; pointer-events: none; }
 
   .tb-sep {
     width: 1px;
-    height: 24px;
+    height: 22px;
     background: var(--border);
     align-self: center;
     margin: 0 2px;
   }
 
+  .tb-select {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 2px 6px;
+    border-radius: var(--radius);
+    font-family: var(--font-fa);
+    font-size: 12px;
+    height: 30px;
+    outline: none;
+    cursor: pointer;
+  }
+  .tb-select:hover { border-color: var(--text-dim); }
+
   .tb-color-wrap {
     position: relative;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: var(--radius);
     overflow: hidden;
     display: flex;
@@ -121,55 +179,35 @@
     justify-content: center;
   }
   .tb-color-wrap:hover { background: var(--border); }
-  .tb-color-input {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
-  .tb-color-icon {
-    pointer-events: none;
-    font-size: 15px;
-    line-height: 1;
-    color: var(--text-dim);
-    font-family: var(--font-en);
-    font-weight: 700;
-  }
+  .tb-color-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .tb-color-icon { pointer-events: none; font-size: 14px; line-height: 1; color: var(--text-dim); font-family: var(--font-en); font-weight: 800; }
 
   .tb-highlight-wrap {
     position: relative;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .tb-highlight-wrap:hover { background: var(--border); }
-  .tb-highlight-input {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
+  .tb-highlight-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .tb-highlight-icon {
     pointer-events: none;
-    font-size: 13px;
+    font-size: 11px;
     color: var(--text-dim);
     font-family: var(--font-en);
-    font-weight: 700;
+    font-weight: 800;
     background: #ffe066;
     padding: 1px 3px;
     border-radius: 2px;
   }
 
+  /* ── Editor body ── */
   .editor-body {
-    min-height: 260px;
-    max-height: 520px;
+    min-height: 300px;
+    max-height: 560px;
     overflow-y: auto;
     background: var(--bg-raised);
     border: 1px solid var(--border);
@@ -186,18 +224,22 @@
     content: attr(data-placeholder);
     color: var(--text-faint);
     pointer-events: none;
+    display: block;
   }
+  .editor-body h1 { font-size: 24px; font-weight: 800; margin: 12px 0 6px; }
+  .editor-body h2 { font-size: 20px; font-weight: 700; margin: 10px 0 5px; }
+  .editor-body h3 { font-size: 17px; font-weight: 700; margin: 8px 0 4px; }
   .editor-body img,
   .editor-body video,
   .editor-body iframe {
     max-width: 100%;
     border-radius: var(--radius);
-    margin: 8px 0;
+    margin: 10px 0;
     display: block;
   }
   .editor-body blockquote {
     border-right: 3px solid var(--text-faint);
-    margin: 8px 0;
+    margin: 10px 0;
     padding: 4px 14px;
     color: var(--text-dim);
     font-style: italic;
@@ -213,7 +255,17 @@
     white-space: pre;
     margin: 8px 0;
   }
+  .editor-body ul, .editor-body ol { padding-right: 24px; margin: 6px 0; }
+  .editor-body li { margin: 2px 0; }
   .editor-body a { text-decoration: underline; text-underline-offset: 2px; }
+  .editor-body table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  .editor-body td, .editor-body th {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    font-size: 14px;
+    text-align: right;
+  }
+  .editor-body th { background: var(--bg); font-weight: 700; }
 
   .char-counter {
     font-family: var(--font-fa);
@@ -225,143 +277,72 @@
   .char-counter.warn { color: #e07b39; }
   .char-counter.over { color: #e03939; }
 
+  /* ── Modals ── */
   .modal-overlay {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: rgba(0,0,0,.55);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 24px;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 24px;
   }
   .modal-overlay.hidden { display: none; }
-
   .modal {
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: calc(var(--radius) * 2);
-    padding: 24px;
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    padding: 24px; width: 100%; max-width: 400px;
+    display: flex; flex-direction: column; gap: 14px;
   }
-
-  .modal-title {
-    font-family: var(--font-fa);
-    font-size: 16px;
-    font-weight: 700;
-    margin: 0;
-    color: var(--text);
-  }
-
+  .modal-title { font-family: var(--font-fa); font-size: 16px; font-weight: 700; margin: 0; color: var(--text); }
   .modal-input {
-    background: var(--bg-raised);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    font-family: var(--font-fa);
-    font-size: 14px;
-    outline: none;
-    width: 100%;
-    box-sizing: border-box;
+    background: var(--bg-raised); border: 1px solid var(--border); color: var(--text);
+    padding: 10px 14px; border-radius: var(--radius);
+    font-family: var(--font-fa); font-size: 14px; outline: none; width: 100%; box-sizing: border-box;
   }
   .modal-input:focus { border-color: var(--text-dim); }
   .modal-input::placeholder { color: var(--text-faint); }
-
-  .modal-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-  }
-
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
   .btn-cancel {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    padding: 8px 18px;
-    border-radius: var(--radius);
-    font-family: var(--font-fa);
-    font-size: 13px;
-    cursor: pointer;
-    transition: background .12s ease;
+    background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+    padding: 8px 18px; border-radius: var(--radius); font-family: var(--font-fa); font-size: 13px; cursor: pointer;
   }
   .btn-cancel:hover { background: var(--bg-raised); }
-
   .btn-insert {
-    background: var(--text);
-    border: 1px solid var(--text);
-    color: var(--bg);
-    padding: 8px 18px;
-    border-radius: var(--radius);
-    font-family: var(--font-fa);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity .12s ease;
+    background: var(--text); border: 1px solid var(--text); color: var(--bg);
+    padding: 8px 18px; border-radius: var(--radius); font-family: var(--font-fa); font-size: 13px; font-weight: 600; cursor: pointer;
   }
   .btn-insert:hover { opacity: .85; }
 
+  /* ── Submit ── */
   .btn-submit {
     align-self: flex-start;
-    background: var(--text);
-    border: none;
-    color: var(--bg);
-    padding: 11px 28px;
-    border-radius: 999px;
-    font-family: var(--font-fa);
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity .15s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    background: var(--text); border: none; color: var(--bg);
+    padding: 11px 28px; border-radius: 999px;
+    font-family: var(--font-fa); font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity .15s ease;
+    display: flex; align-items: center; gap: 8px;
   }
   .btn-submit:hover { opacity: .85; }
   .btn-submit:disabled { opacity: .45; cursor: default; }
-
   .submit-spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top-color: var(--bg);
-    border-radius: 50%;
-    animation: spin .6s linear infinite;
-    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid transparent; border-top-color: var(--bg);
+    border-radius: 50%; animation: spin .6s linear infinite; display: none;
   }
   .btn-submit.loading .submit-spinner { display: block; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ── Toast ── */
   .toast {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
+    position: fixed; bottom: 32px; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: var(--text);
-    color: var(--bg);
-    padding: 12px 22px;
-    border-radius: 999px;
-    font-family: var(--font-fa);
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0;
-    transition: opacity .2s ease, transform .2s ease;
-    pointer-events: none;
-    z-index: 200;
-    white-space: nowrap;
+    background: var(--text); color: var(--bg);
+    padding: 12px 22px; border-radius: 999px;
+    font-family: var(--font-fa); font-size: 14px; font-weight: 600;
+    opacity: 0; transition: opacity .2s ease, transform .2s ease;
+    pointer-events: none; z-index: 200; white-space: nowrap;
   }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  .toast.error {
-    background: #e03939;
-    color: #fff;
-  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #e03939; color: #fff; }
 
   @media (max-width: 640px) {
     .editor-wrap { padding: 24px 16px 100px; }
@@ -387,26 +368,35 @@
   <div class="editor-wrap">
     <h1 class="editor-page-title">پست جدید</h1>
 
+    <!-- Title -->
     <div class="field">
-      <label class="field-label" for="f-title">
-        عنوان مطلب <span class="required">*</span>
-      </label>
+      <label class="field-label" for="f-title">عنوان مطلب <span class="required">*</span></label>
       <input class="field-input" id="f-title" type="text" placeholder="عنوان پست خود را بنویسید…" maxlength="120" autocomplete="off">
     </div>
 
+    <!-- Banner -->
     <div class="field">
-      <label class="field-label" for="f-banner">
-        بنر مطلب <span class="optional">(اختیاری)</span>
-      </label>
+      <label class="field-label" for="f-banner">بنر مطلب <span class="optional">(اختیاری)</span></label>
       <input class="field-input" id="f-banner" type="url" placeholder="لینک مستقیم تصویر بنر…" autocomplete="off">
     </div>
 
+    <!-- Rich editor -->
     <div class="field">
-      <label class="field-label">
-        متن مطلب <span class="required">*</span>
-      </label>
+      <label class="field-label">متن مطلب <span class="required">*</span></label>
 
-      <div class="editor-toolbar" role="toolbar" aria-label="ابزارهای ویرایش">
+      <div class="editor-toolbar" role="toolbar">
+
+        <!-- Heading -->
+        <select class="tb-select" id="tb-heading" title="هدینگ">
+          <option value="">معمولی</option>
+          <option value="h1">H1</option>
+          <option value="h2">H2</option>
+          <option value="h3">H3</option>
+        </select>
+
+        <div class="tb-sep"></div>
+
+        <!-- Align -->
         <button class="tb-btn" data-cmd="justifyRight" title="راست‌چین">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M9 12h12M3 18h18"/></svg>
         </button>
@@ -419,18 +409,19 @@
 
         <div class="tb-sep"></div>
 
-        <button class="tb-btn" data-cmd="bold" title="بولد" style="font-weight:800">B</button>
+        <!-- Format -->
+        <button class="tb-btn" data-cmd="bold" title="بولد" style="font-weight:900">B</button>
         <button class="tb-btn" data-cmd="italic" title="ایتالیک" style="font-style:italic">I</button>
         <button class="tb-btn" data-cmd="underline" title="زیرخط" style="text-decoration:underline">U</button>
         <button class="tb-btn" data-cmd="strikeThrough" title="خط‌خورده" style="text-decoration:line-through">S</button>
 
         <div class="tb-sep"></div>
 
+        <!-- Color & Highlight -->
         <div class="tb-color-wrap" title="رنگ متن">
           <span class="tb-color-icon">A</span>
           <input class="tb-color-input" type="color" id="tb-text-color" value="#e07b39">
         </div>
-
         <div class="tb-highlight-wrap" title="هایلایت">
           <span class="tb-highlight-icon">H</span>
           <input class="tb-highlight-input" type="color" id="tb-highlight-color" value="#ffe066">
@@ -438,30 +429,56 @@
 
         <div class="tb-sep"></div>
 
+        <!-- Lists -->
+        <button class="tb-btn" data-cmd="insertUnorderedList" title="لیست نقطه‌ای">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
+        </button>
+        <button class="tb-btn" data-cmd="insertOrderedList" title="لیست شماره‌دار">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+        </button>
+
+        <div class="tb-sep"></div>
+
+        <!-- Blocks -->
         <button class="tb-btn" id="btn-quote" title="نقل‌قول">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6c0 5 3 8 7 8Zm10 0c3 0 7-1 7-8V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6c0 5 3 8 7 8Z"/></svg>
         </button>
         <button class="tb-btn" id="btn-code" title="بلوک کد">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         </button>
+        <button class="tb-btn" id="btn-table" title="جدول">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        </button>
+        <button class="tb-btn" id="btn-hr" title="خط جداکننده">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/></svg>
+        </button>
 
         <div class="tb-sep"></div>
 
+        <!-- Link & Media -->
         <button class="tb-btn" id="btn-link" title="لینک">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
         </button>
-
-        <button class="tb-btn" id="btn-image" title="تصویر / گیف با URL">
+        <button class="tb-btn" id="btn-image" title="تصویر">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
         </button>
-
-        <button class="tb-btn" id="btn-video" title="ویدیو با URL مستقیم">
+        <button class="tb-btn" id="btn-video" title="ویدیو">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
         </button>
-
-        <button class="tb-btn" id="btn-embed" title="امبد (Spotify, YouTube, …)">
+        <button class="tb-btn" id="btn-embed" title="امبد">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </button>
+
+        <div class="tb-sep"></div>
+
+        <!-- Undo / Redo -->
+        <button class="tb-btn" data-cmd="undo" title="بازگشت (Ctrl+Z)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M3 13A9 9 0 1 0 6 6.7L3 9"/></svg>
+        </button>
+        <button class="tb-btn" data-cmd="redo" title="جلو (Ctrl+Y)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M21 13A9 9 0 1 1 18 6.7L21 9"/></svg>
+        </button>
+
       </div>
 
       <div
@@ -474,25 +491,28 @@
       <div class="char-counter" id="char-counter">۰ / ۱۰۰۰</div>
     </div>
 
+    <!-- Author (cookie-backed) -->
     <div class="field">
-      <label class="field-label" for="f-author">
-        اسم نویسنده <span class="required">*</span>
-      </label>
-      <input class="field-input" id="f-author" type="text" placeholder="نام نمایشی شما…" maxlength="60" autocomplete="off">
-    </div>
-
-    <div class="field">
-      <label class="field-label" for="f-avatar">
-        پروفایل نویسنده <span class="optional">(اختیاری)</span>
-      </label>
-      <input class="field-input" id="f-avatar" type="url" placeholder="لینک مستقیم تصویر پروفایل…" autocomplete="off">
+      <label class="field-label">نویسنده <span class="required">*</span></label>
+      <div class="profile-row" id="profile-row">
+        <img class="profile-avatar-preview" id="avatar-preview" src="" alt="">
+        <div class="profile-info">
+          <div class="profile-name-display empty" id="profile-name-display">اسم و عکس پروفایل ذخیره نشده</div>
+        </div>
+        <button class="btn-edit-profile" id="btn-edit-profile">ویرایش</button>
+      </div>
+      <!-- edit fields (hidden by default) -->
+      <div id="profile-fields" style="display:none; display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+        <input class="field-input" id="f-author" type="text" placeholder="نام نمایشی شما…" maxlength="60" autocomplete="off">
+        <input class="field-input" id="f-avatar" type="url" placeholder="لینک مستقیم تصویر پروفایل… (اختیاری)" autocomplete="off">
+        <button class="btn-save-profile" id="btn-save-profile" style="align-self:flex-start">ذخیره پروفایل</button>
+      </div>
     </div>
 
     <button class="btn-submit" id="btn-submit">
       <span id="btn-label">ارسال پست</span>
-      <span class="submit-spinner" id="submit-spinner"></span>
+      <span class="submit-spinner"></span>
     </button>
-
   </div>
 
   <footer class="site-footer">
@@ -552,24 +572,98 @@
     </div>
   </div>
 
+  <div class="modal-overlay hidden" id="modal-table">
+    <div class="modal">
+      <h2 class="modal-title">درج جدول</h2>
+      <input class="modal-input" id="table-rows" type="number" placeholder="تعداد سطر" min="1" max="20" value="3">
+      <input class="modal-input" id="table-cols" type="number" placeholder="تعداد ستون" min="1" max="10" value="3">
+      <div class="modal-actions">
+        <button class="btn-cancel" id="table-cancel">لغو</button>
+        <button class="btn-insert" id="table-insert">درج</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
   /* ── Config ── */
-  const GITHUB_TOKEN = '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';
+  const GITHUB_TOKEN = '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';
   const REPO         = 'maborai/Maborai.github.io';
-  const BASE_BRANCH  = 'main';
 
   /* ── Theme ── */
-  const root = document.documentElement;
+  const root    = document.documentElement;
   const logoImg = document.getElementById('logo-img');
-
-  function applyTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    logoImg.src = theme === 'dark' ? '../logo-dark.png' : '../logo-light.png';
-    localStorage.setItem('theme', theme);
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    logoImg.src = t === 'dark' ? '../logo-dark.png' : '../logo-light.png';
+    localStorage.setItem('theme', t);
   }
   applyTheme(root.getAttribute('data-theme'));
+
+  /* ── Cookie helpers ── */
+  function setCookie(name, value, days) {
+    const d = new Date(); d.setTime(d.getTime() + days * 86400000);
+    document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/`;
+  }
+  function getCookie(name) {
+    const m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
+  /* ── Profile (cookie) ── */
+  const profileRow      = document.getElementById('profile-row');
+  const profileFields   = document.getElementById('profile-fields');
+  const profileDisplay  = document.getElementById('profile-name-display');
+  const avatarPreview   = document.getElementById('avatar-preview');
+  const fAuthor         = document.getElementById('f-author');
+  const fAvatar         = document.getElementById('f-avatar');
+  const btnEditProfile  = document.getElementById('btn-edit-profile');
+  const btnSaveProfile  = document.getElementById('btn-save-profile');
+
+  function loadProfile() {
+    const name   = getCookie('mabo_author');
+    const avatar = getCookie('mabo_avatar');
+    if (name) {
+      profileDisplay.textContent = name;
+      profileDisplay.classList.remove('empty');
+      if (avatar) { avatarPreview.src = avatar; avatarPreview.classList.add('show'); }
+      profileFields.style.display = 'none';
+      btnEditProfile.textContent = 'ویرایش';
+    } else {
+      profileDisplay.textContent = 'اسم و عکس پروفایل ذخیره نشده';
+      profileDisplay.classList.add('empty');
+      avatarPreview.classList.remove('show');
+      profileFields.style.display = 'flex';
+      btnEditProfile.textContent = 'بستن';
+    }
+    fAuthor.value = name;
+    fAvatar.value = avatar;
+  }
+
+  btnEditProfile.addEventListener('click', () => {
+    const open = profileFields.style.display !== 'none';
+    profileFields.style.display = open ? 'none' : 'flex';
+    btnEditProfile.textContent = open ? 'ویرایش' : 'بستن';
+  });
+
+  btnSaveProfile.addEventListener('click', () => {
+    const name   = fAuthor.value.trim();
+    const avatar = fAvatar.value.trim();
+    if (!name) { showToast('اسم نویسنده را وارد کنید.', true); return; }
+    setCookie('mabo_author', name,   365);
+    setCookie('mabo_avatar', avatar, 365);
+    loadProfile();
+    showToast('پروفایل ذخیره شد ✓');
+  });
+
+  fAvatar.addEventListener('input', () => {
+    const v = fAvatar.value.trim();
+    if (v) { avatarPreview.src = v; avatarPreview.classList.add('show'); }
+    else   { avatarPreview.classList.remove('show'); }
+  });
+
+  loadProfile();
 
   /* ── Editor ── */
   const editor      = document.getElementById('editor-body');
@@ -597,23 +691,45 @@
     });
   });
 
+  // Heading
+  document.getElementById('tb-heading').addEventListener('change', function() {
+    editor.focus();
+    if (this.value) {
+      document.execCommand('formatBlock', false, this.value);
+    } else {
+      document.execCommand('formatBlock', false, 'p');
+    }
+    this.value = '';
+  });
+
+  // Quote
   document.getElementById('btn-quote').addEventListener('mousedown', e => {
     e.preventDefault();
     document.execCommand('formatBlock', false, 'blockquote');
     editor.focus();
   });
 
+  // Code
   document.getElementById('btn-code').addEventListener('mousedown', e => {
     e.preventDefault();
     document.execCommand('formatBlock', false, 'pre');
     editor.focus();
   });
 
+  // HR
+  document.getElementById('btn-hr').addEventListener('mousedown', e => {
+    e.preventDefault();
+    document.execCommand('insertHorizontalRule', false, null);
+    editor.focus();
+  });
+
+  // Color
   document.getElementById('tb-text-color').addEventListener('input', function() {
     document.execCommand('foreColor', false, this.value);
     editor.focus();
   });
 
+  // Highlight
   document.getElementById('tb-highlight-color').addEventListener('input', function() {
     document.execCommand('hiliteColor', false, this.value);
     editor.focus();
@@ -638,11 +754,16 @@
   function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
   function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+  ['modal-link','modal-image','modal-video','modal-embed','modal-table'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) closeModal(id);
+    });
+  });
+
+  // Link
   document.getElementById('btn-link').addEventListener('click', () => {
-    saveSelection();
-    document.getElementById('link-url').value = '';
-    openModal('modal-link');
-    setTimeout(() => document.getElementById('link-url').focus(), 50);
+    saveSelection(); document.getElementById('link-url').value = '';
+    openModal('modal-link'); setTimeout(() => document.getElementById('link-url').focus(), 50);
   });
   document.getElementById('link-cancel').addEventListener('click', () => closeModal('modal-link'));
   document.getElementById('link-insert').addEventListener('click', () => {
@@ -651,16 +772,14 @@
     restoreSelection();
     document.execCommand('createLink', false, url);
     editor.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
-    closeModal('modal-link');
-    updateCounter();
+    closeModal('modal-link'); updateCounter();
   });
 
+  // Image
   document.getElementById('btn-image').addEventListener('click', () => {
     saveSelection();
-    document.getElementById('image-url').value = '';
-    document.getElementById('image-link').value = '';
-    openModal('modal-image');
-    setTimeout(() => document.getElementById('image-url').focus(), 50);
+    document.getElementById('image-url').value = ''; document.getElementById('image-link').value = '';
+    openModal('modal-image'); setTimeout(() => document.getElementById('image-url').focus(), 50);
   });
   document.getElementById('image-cancel').addEventListener('click', () => closeModal('modal-image'));
   document.getElementById('image-insert').addEventListener('click', () => {
@@ -670,16 +789,14 @@
     restoreSelection();
     let html = `<img src="${escAttr(src)}" alt="" loading="lazy">`;
     if (href) html = `<a href="${escAttr(href)}" target="_blank" rel="noopener">${html}</a>`;
-    document.execCommand('insertHTML', false, html + '<br>');
-    closeModal('modal-image');
-    updateCounter();
+    document.execCommand('insertHTML', false, '<p>' + html + '</p>');
+    closeModal('modal-image'); updateCounter();
   });
 
+  // Video
   document.getElementById('btn-video').addEventListener('click', () => {
-    saveSelection();
-    document.getElementById('video-url').value = '';
-    openModal('modal-video');
-    setTimeout(() => document.getElementById('video-url').focus(), 50);
+    saveSelection(); document.getElementById('video-url').value = '';
+    openModal('modal-video'); setTimeout(() => document.getElementById('video-url').focus(), 50);
   });
   document.getElementById('video-cancel').addEventListener('click', () => closeModal('modal-video'));
   document.getElementById('video-insert').addEventListener('click', () => {
@@ -687,42 +804,56 @@
     if (!src) return;
     restoreSelection();
     document.execCommand('insertHTML', false,
-      `<video src="${escAttr(src)}" controls playsinline style="max-width:100%;border-radius:4px;margin:8px 0"></video><br>`);
-    closeModal('modal-video');
-    updateCounter();
+      `<p><video src="${escAttr(src)}" controls playsinline style="max-width:100%;border-radius:4px"></video></p>`);
+    closeModal('modal-video'); updateCounter();
   });
 
+  // Embed
   document.getElementById('btn-embed').addEventListener('click', () => {
-    saveSelection();
-    document.getElementById('embed-url').value = '';
-    openModal('modal-embed');
-    setTimeout(() => document.getElementById('embed-url').focus(), 50);
+    saveSelection(); document.getElementById('embed-url').value = '';
+    openModal('modal-embed'); setTimeout(() => document.getElementById('embed-url').focus(), 50);
   });
   document.getElementById('embed-cancel').addEventListener('click', () => closeModal('modal-embed'));
   document.getElementById('embed-insert').addEventListener('click', () => {
-    const url    = document.getElementById('embed-url').value.trim();
+    const url = document.getElementById('embed-url').value.trim();
     if (!url) return;
     const iframe = buildEmbed(url);
     if (!iframe) { showToast('لینک پشتیبانی نمی‌شود.', true); return; }
     restoreSelection();
-    document.execCommand('insertHTML', false, iframe + '<br>');
-    closeModal('modal-embed');
-    updateCounter();
+    document.execCommand('insertHTML', false, '<p>' + iframe + '</p>');
+    closeModal('modal-embed'); updateCounter();
   });
 
   function buildEmbed(url) {
     let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-    if (m) return `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${m[1]}" frameborder="0" allowfullscreen style="border-radius:4px;margin:8px 0;display:block"></iframe>`;
+    if (m) return `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${m[1]}" frameborder="0" allowfullscreen style="border-radius:4px;display:block"></iframe>`;
     m = url.match(/open\.spotify\.com\/(track|album|playlist|episode)\/([A-Za-z0-9]+)/);
-    if (m) return `<iframe src="https://open.spotify.com/embed/${m[1]}/${m[2]}" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" style="border-radius:12px;margin:8px 0;display:block"></iframe>`;
-    if (url.includes('soundcloud.com')) return `<iframe width="100%" height="166" src="https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ff5500" frameborder="0" style="margin:8px 0;display:block"></iframe>`;
-    return `<iframe src="${escAttr(url)}" width="100%" height="315" frameborder="0" allowfullscreen style="border-radius:4px;margin:8px 0;display:block"></iframe>`;
+    if (m) return `<iframe src="https://open.spotify.com/embed/${m[1]}/${m[2]}" width="100%" height="152" frameborder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" style="border-radius:12px;display:block"></iframe>`;
+    if (url.includes('soundcloud.com')) return `<iframe width="100%" height="166" src="https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ff5500" frameborder="0" style="display:block"></iframe>`;
+    return `<iframe src="${escAttr(url)}" width="100%" height="315" frameborder="0" allowfullscreen style="border-radius:4px;display:block"></iframe>`;
   }
 
-  ['modal-link','modal-image','modal-video','modal-embed'].forEach(id => {
-    document.getElementById(id).addEventListener('click', function(e) {
-      if (e.target === this) closeModal(id);
-    });
+  // Table
+  document.getElementById('btn-table').addEventListener('click', () => {
+    saveSelection();
+    openModal('modal-table'); setTimeout(() => document.getElementById('table-rows').focus(), 50);
+  });
+  document.getElementById('table-cancel').addEventListener('click', () => closeModal('modal-table'));
+  document.getElementById('table-insert').addEventListener('click', () => {
+    const rows = parseInt(document.getElementById('table-rows').value) || 3;
+    const cols = parseInt(document.getElementById('table-cols').value) || 3;
+    let html = '<table>';
+    for (let r = 0; r < rows; r++) {
+      html += '<tr>';
+      for (let c = 0; c < cols; c++) {
+        html += r === 0 ? '<th>&nbsp;</th>' : '<td>&nbsp;</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</table>';
+    restoreSelection();
+    document.execCommand('insertHTML', false, '<p>' + html + '</p>');
+    closeModal('modal-table'); updateCounter();
   });
 
   /* ── Toast ── */
@@ -743,7 +874,6 @@
     'X-GitHub-Api-Version': '2022-11-28',
   };
 
-  // ۱. SHA آخرین commit از main بگیر
   async function getMainSha() {
     const res  = await fetch(`https://api.github.com/repos/${REPO}/git/ref/heads/main`, { headers: GH_HEADERS });
     const data = await res.json();
@@ -751,122 +881,93 @@
     return data.object.sha;
   }
 
-  // ۲. branch جدید بساز
   async function createBranch(branchName, sha) {
     const res = await fetch(`https://api.github.com/repos/${REPO}/git/refs`, {
-      method: 'POST',
-      headers: GH_HEADERS,
+      method: 'POST', headers: GH_HEADERS,
       body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'خطا در ساخت branch');
   }
 
-  // ۳. index.json رو از main بخون
   async function getIndexJson() {
     const res  = await fetch(`https://api.github.com/repos/${REPO}/contents/index.json`, { headers: GH_HEADERS });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'خطا در خواندن index.json');
-    const posts = JSON.parse(atob(data.content.replace(/\n/g, '')));
-    return { posts, sha: data.sha };
+    return { posts: JSON.parse(atob(data.content.replace(/\n/g, ''))), sha: data.sha };
   }
 
-  // ۴. index.json رو توی branch جدید بنویس
-  async function updateIndexInBranch(branchName, posts, fileSha, commitMsg) {
+  async function updateIndexInBranch(branchName, posts, fileSha, msg) {
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2))));
     const res = await fetch(`https://api.github.com/repos/${REPO}/contents/index.json`, {
-      method: 'PUT',
-      headers: GH_HEADERS,
-      body: JSON.stringify({ message: commitMsg, content: encoded, sha: fileSha, branch: branchName }),
+      method: 'PUT', headers: GH_HEADERS,
+      body: JSON.stringify({ message: msg, content: encoded, sha: fileSha, branch: branchName }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'خطا در آپدیت index.json');
   }
 
-  // ۵. PR باز کن
   async function openPR(branchName, title, body) {
     const res = await fetch(`https://api.github.com/repos/${REPO}/pulls`, {
-      method: 'POST',
-      headers: GH_HEADERS,
+      method: 'POST', headers: GH_HEADERS,
       body: JSON.stringify({ title, head: branchName, base: 'main', body }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'خطا در باز کردن PR');
-    return data.html_url;
   }
 
   /* ── Submit ── */
   document.getElementById('btn-submit').addEventListener('click', async () => {
     const title        = document.getElementById('f-title').value.trim();
     const banner       = document.getElementById('f-banner').value.trim();
-    const authorName   = document.getElementById('f-author').value.trim();
-    const authorAvatar = document.getElementById('f-avatar').value.trim();
+    const authorName   = getCookie('mabo_author');
+    const authorAvatar = getCookie('mabo_avatar');
     const content      = editor.innerHTML.trim();
     const plainText    = getEditorText().replace(/\n/g, '').length;
     const mediaCount   = editor.querySelectorAll('img, video, iframe').length * MEDIA_WEIGHT;
     const totalChars   = plainText + mediaCount;
 
     if (!title)            { showToast('عنوان مطلب را وارد کنید.', true); return; }
-    if (!authorName)       { showToast('اسم نویسنده را وارد کنید.', true); return; }
+    if (!authorName)       { showToast('ابتدا پروفایل خود را ذخیره کنید.', true); return; }
     if (plainText < 100)   { showToast('متن مطلب باید حداقل ۱۰۰ کاراکتر باشد.', true); return; }
     if (totalChars > 1000) { showToast('متن مطلب از ۱۰۰۰ کاراکتر بیشتر است.', true); return; }
 
     const btn = document.getElementById('btn-submit');
     const lbl = document.getElementById('btn-label');
-    btn.disabled = true;
-    btn.classList.add('loading');
-    lbl.textContent = 'در حال ارسال…';
+    btn.disabled = true; btn.classList.add('loading');
 
     try {
       const date       = new Date().toISOString().slice(0, 10);
       const branchName = `post-${Date.now()}`;
       const postData   = { title, banner, content, authorName, authorAvatar, date, pinned: false };
 
-      // ۱. SHA آخرین commit
-      lbl.textContent = 'در حال آماده‌سازی…';
+      lbl.textContent = 'آماده‌سازی…';
       const mainSha = await getMainSha();
-
-      // ۲. branch جدید بساز
       await createBranch(branchName, mainSha);
 
-      // ۳. index.json رو بخون
-      lbl.textContent = 'در حال بارگذاری…';
+      lbl.textContent = 'بارگذاری…';
       const { posts, sha: fileSha } = await getIndexJson();
 
-      // ۴. پست جدید رو اضافه کن و توی branch بنویس
+      lbl.textContent = 'ارسال…';
       posts.unshift(postData);
-      lbl.textContent = 'در حال ارسال…';
       await updateIndexInBranch(branchName, posts, fileSha, `پست جدید: ${title}`);
-
-      // ۵. PR باز کن
-      await openPR(
-        branchName,
-        `پست جدید: ${title}`,
-        `**نویسنده:** ${authorName}\n**تاریخ:** ${date}`
-      );
+      await openPR(branchName, `پست جدید: ${title}`, `**نویسنده:** ${authorName}\n**تاریخ:** ${date}`);
 
       showToast('پست ارسال شد و منتظر بررسی است ✓');
-
-      // Reset
       setTimeout(() => {
         document.getElementById('f-title').value  = '';
         document.getElementById('f-banner').value = '';
-        document.getElementById('f-author').value = '';
-        document.getElementById('f-avatar').value = '';
-        editor.innerHTML = '';
-        updateCounter();
+        editor.innerHTML = ''; updateCounter();
       }, 1500);
 
     } catch (err) {
       showToast('خطا: ' + err.message, true);
     } finally {
-      btn.disabled = false;
-      btn.classList.remove('loading');
+      btn.disabled = false; btn.classList.remove('loading');
       lbl.textContent = 'ارسال پست';
     }
   });
 
-  /* ── Helpers ── */
   function escAttr(s) {
     return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
