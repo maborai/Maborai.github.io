@@ -70,7 +70,6 @@
   }
   .btn-edit-profile:hover { background: var(--border); }
 
-  /* ════ TOOLBAR ════ */
   .editor-toolbar {
     display: flex; flex-wrap: wrap; gap: 3px; padding: 6px 8px;
     background: var(--bg-raised); border: 1px solid var(--border);
@@ -97,7 +96,6 @@
   }
   .tb-select:hover { border-color: var(--text-dim); }
 
-  /* Font size */
   .tb-size-wrap { display: flex; align-items: center; gap: 2px; }
   .tb-size-input {
     width: 44px; height: 30px; padding: 0 6px;
@@ -107,7 +105,6 @@
   }
   .tb-size-input:focus { border-color: var(--text-dim); color: var(--text); }
 
-  /* ════ COLOR PICKER ════ */
   .color-picker-wrap { position: relative; }
 
   .color-picker-trigger {
@@ -209,7 +206,6 @@
   }
   .cp-apply-btn:hover { opacity: .85; }
 
-  /* ════ EDITOR BODY ════ */
   .editor-body {
     min-height: 300px; max-height: 560px; overflow-y: auto;
     background: var(--bg-raised); border: 1px solid var(--border);
@@ -259,7 +255,6 @@
   .char-counter.warn { color: #e07b39; }
   .char-counter.over { color: #e03939; }
 
-  /* ════ LINK POPUP ════ */
   .link-popup {
     position: fixed; z-index: 400;
     background: var(--bg-raised); border: 1px solid var(--border);
@@ -286,7 +281,6 @@
   .link-popup-btn.danger { border-color: #e03939; color: #e03939; }
   .link-popup-btn.danger:hover { background: #e03939; color: #fff; }
 
-  /* ════ TABLE CELL MENU ════ */
   .cell-menu {
     position: fixed; z-index: 400;
     background: var(--bg-raised); border: 1px solid var(--border);
@@ -314,7 +308,6 @@
   }
   .cell-color-dot:hover { transform: scale(1.2); border-color: var(--text); }
 
-  /* ════ MODALS ════ */
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,.55);
     display: flex; align-items: center; justify-content: center;
@@ -407,25 +400,21 @@
 <div class="editor-wrap">
   <h1 class="editor-page-title">پست جدید</h1>
 
-  <!-- Title -->
   <div class="field">
     <label class="field-label" for="f-title">عنوان مطلب <span class="required">*</span></label>
     <input class="field-input" id="f-title" type="text" placeholder="عنوان پست خود را بنویسید…" maxlength="120" autocomplete="off">
   </div>
 
-  <!-- Banner -->
   <div class="field">
     <label class="field-label" for="f-banner">بنر مطلب <span class="optional">(اختیاری)</span></label>
     <input class="field-input" id="f-banner" type="url" placeholder="لینک مستقیم تصویر بنر…" autocomplete="off">
   </div>
 
-  <!-- Rich editor -->
   <div class="field">
     <label class="field-label">متن مطلب <span class="required">*</span></label>
 
     <div class="editor-toolbar" role="toolbar">
 
-      <!-- Heading -->
       <select class="tb-select" id="tb-heading" title="هدینگ">
         <option value="">معمولی</option>
         <option value="H1">H1</option>
@@ -438,7 +427,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Font size -->
       <div class="tb-size-wrap">
         <input class="tb-size-input" id="tb-fontsize" type="number" value="15" min="8" max="72" title="سایز فونت (px)">
         <span style="font-size:11px;color:var(--text-faint);font-family:var(--font-en)">px</span>
@@ -446,7 +434,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Align -->
       <button class="tb-btn" data-cmd="justifyRight" title="راست‌چین">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M9 12h12M3 18h18"/></svg>
       </button>
@@ -459,7 +446,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Format -->
       <button class="tb-btn" data-cmd="bold" title="بولد (Ctrl+B)" style="font-weight:900">B</button>
       <button class="tb-btn" data-cmd="italic" title="ایتالیک (Ctrl+I)" style="font-style:italic">I</button>
       <button class="tb-btn" data-cmd="underline" title="زیرخط (Ctrl+U)" style="text-decoration:underline">U</button>
@@ -467,7 +453,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Text color picker -->
       <div class="color-picker-wrap" id="text-color-wrap">
         <button class="color-picker-trigger" id="btn-text-color" title="رنگ متن" type="button">
           <div class="color-trigger-inner">
@@ -496,7 +481,6 @@
         </div>
       </div>
 
-      <!-- Highlight picker -->
       <div class="color-picker-wrap" id="hl-color-wrap">
         <button class="color-picker-trigger" id="btn-hl-color" title="هایلایت" type="button">
           <div class="color-trigger-inner">
@@ -527,7 +511,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Lists -->
       <button class="tb-btn" data-cmd="insertUnorderedList" title="لیست نقطه‌ای">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
       </button>
@@ -537,7 +520,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Blocks -->
       <button class="tb-btn" id="btn-quote" title="نقل‌قول">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6c0 5 3 8 7 8Zm10 0c3 0 7-1 7-8V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6c0 5 3 8 7 8Z"/></svg>
       </button>
@@ -557,7 +539,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Link & Media -->
       <button class="tb-btn" id="btn-link" title="لینک">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
       </button>
@@ -573,7 +554,6 @@
 
       <div class="tb-sep"></div>
 
-      <!-- Undo / Redo -->
       <button class="tb-btn" data-cmd="undo" title="بازگشت (Ctrl+Z)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
       </button>
@@ -583,12 +563,11 @@
     </div>
 
     <div class="editor-body" id="editor-body" contenteditable="true"
-      data-placeholder="متن پست خود را اینجا بنویسید… (حداقل ۱۰۰ کاراکتر)"
+      data-placeholder="متن پست خود را اینجا بنویسید… (حداقل ۱۰ کاراکتر)"
       spellcheck="false"></div>
-    <div class="char-counter" id="char-counter">۰ / ۱۰۰۰</div>
+    <div class="char-counter" id="char-counter">۰ / ۲۰۰۰</div>
   </div>
 
-  <!-- Author -->
   <div class="field">
     <label class="field-label">نویسنده <span class="required">*</span></label>
     <div class="profile-row" id="profile-row">
@@ -617,14 +596,12 @@
   </p>
 </footer>
 
-<!-- Floating link popup -->
 <div class="link-popup" id="link-popup">
   <div class="link-popup-url" id="link-popup-url"><a href="#" id="link-popup-anchor" target="_blank" rel="noopener"></a></div>
   <button class="link-popup-btn" id="link-popup-edit">ویرایش</button>
   <button class="link-popup-btn danger" id="link-popup-remove">حذف</button>
 </div>
 
-<!-- Table cell context menu -->
 <div class="cell-menu" id="cell-menu">
   <div class="cell-menu-title">سلول جدول</div>
   <div class="cell-menu-sep"></div>
@@ -649,7 +626,6 @@
   <div class="cell-color-row" id="cm-colors"></div>
 </div>
 
-<!-- Modals -->
 <div class="modal-overlay hidden" id="modal-link">
   <div class="modal">
     <h2 class="modal-title">افزودن لینک</h2>
@@ -728,12 +704,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ══════════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════════ */
 const ADMIN_EMAIL = 'Maborai.sp@gmail.com';
 
-/* ── Theme ── */
 const root = document.documentElement;
 const logoImg = document.getElementById('logo-img');
 function applyTheme(t) {
@@ -743,17 +715,15 @@ function applyTheme(t) {
 }
 applyTheme(root.getAttribute('data-theme'));
 
-/* ── Cookies ── */
 function setCookie(name, value, days) {
   const d = new Date(); d.setTime(d.getTime() + days * 86400000);
-  document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/`;
+  document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + d.toUTCString() + ';path=/';
 }
 function getCookie(name) {
   const m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
   return m ? decodeURIComponent(m[1]) : '';
 }
 
-/* ── Profile ── */
 const profileFields  = document.getElementById('profile-fields');
 const profileDisplay = document.getElementById('profile-name-display');
 const avatarPreview  = document.getElementById('avatar-preview');
@@ -803,9 +773,6 @@ fAvatar.addEventListener('input', () => {
 });
 loadProfile();
 
-/* ══════════════════════════════════════════════
-   COLOR UTILITIES
-══════════════════════════════════════════════ */
 function hexToHsv(hex) {
   let r = parseInt(hex.slice(1,3),16)/255;
   let g = parseInt(hex.slice(3,5),16)/255;
@@ -838,9 +805,6 @@ function hsvToHex(h, s, v) {
   return '#'+ [r,g,b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
 }
 
-/* ══════════════════════════════════════════════
-   COLOR PICKER FACTORY
-══════════════════════════════════════════════ */
 const COLOR_PRESETS_TEXT = [
   '#1a1916','#e8e6e1','#e03939','#e07b39','#4a9eff','#3db87a',
   '#a259ff','#ffcc00','#ff66aa','#00cccc','#888888','#ffffff'
@@ -891,7 +855,7 @@ function buildColorPicker(cfg) {
       hueCtx.moveTo(cx,cy);
       hueCtx.arc(cx,cy,r,s,e);
       hueCtx.closePath();
-      hueCtx.fillStyle = `hsl(${a},100%,50%)`;
+      hueCtx.fillStyle = 'hsl(' + a + ',100%,50%)';
       hueCtx.fill();
     }
     hueCtx.beginPath();
@@ -904,14 +868,14 @@ function buildColorPicker(cfg) {
     hueCtx.beginPath();
     hueCtx.arc(px, py, 5, 0, Math.PI*2);
     hueCtx.strokeStyle = '#fff'; hueCtx.lineWidth = 2; hueCtx.stroke();
-    hueCtx.fillStyle = `hsl(${hue},100%,50%)`; hueCtx.fill();
+    hueCtx.fillStyle = 'hsl(' + hue + ',100%,50%)'; hueCtx.fill();
   }
 
   function drawSV() {
     svCtx.clearRect(0,0,svW,svH);
     const gH = svCtx.createLinearGradient(0,0,svW,0);
     gH.addColorStop(0,'#fff');
-    gH.addColorStop(1,`hsl(${hue},100%,50%)`);
+    gH.addColorStop(1,'hsl(' + hue + ',100%,50%)');
     svCtx.fillStyle = gH; svCtx.fillRect(0,0,svW,svH);
     const gV = svCtx.createLinearGradient(0,0,0,svH);
     gV.addColorStop(0,'rgba(0,0,0,0)');
@@ -1018,7 +982,6 @@ function buildColorPicker(cfg) {
   syncColor();
 }
 
-/* ── Panel toggle ── */
 function positionPanel(panel) {
   panel.style.right = '';
   panel.style.left = '';
@@ -1085,11 +1048,10 @@ buildColorPicker({
   }
 });
 
-/* ══════════════════════════════════════════════
-   CHAR COUNTER
-══════════════════════════════════════════════ */
 const charCounter = document.getElementById('char-counter');
 const MEDIA_WEIGHT = 10;
+const MIN_CHARS = 10;
+const MAX_CHARS = 2000;
 
 function getEditorText() { return editor.innerText || ''; }
 function updateCounter() {
@@ -1097,14 +1059,12 @@ function updateCounter() {
   const mediaCount = editor.querySelectorAll('img,video,iframe').length * MEDIA_WEIGHT;
   const total      = raw + mediaCount;
   const toFarsi    = n => n.toString().replace(/\d/g, d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
-  charCounter.textContent = `${toFarsi(total)} / ۱۰۰۰`;
-  charCounter.className = 'char-counter' + (total>1000?' over':total>800?' warn':'');
+  charCounter.textContent = toFarsi(total) + ' / ' + toFarsi(MAX_CHARS);
+  charCounter.className = 'char-counter' + (total>MAX_CHARS?' over':total>MAX_CHARS*0.8?' warn':'');
 }
 editor.addEventListener('input', updateCounter);
+updateCounter();
 
-/* ══════════════════════════════════════════════
-   TOOLBAR
-══════════════════════════════════════════════ */
 document.querySelectorAll('[data-cmd]').forEach(btn => {
   btn.addEventListener('mousedown', e => {
     e.preventDefault();
@@ -1172,9 +1132,6 @@ document.getElementById('btn-hr').addEventListener('mousedown', e => {
   editor.focus();
 });
 
-/* ══════════════════════════════════════════════
-   SELECTION SAVE/RESTORE
-══════════════════════════════════════════════ */
 function saveSelection() {
   const sel = window.getSelection();
   if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
@@ -1189,9 +1146,6 @@ editor.addEventListener('mouseup', saveSelection);
 editor.addEventListener('keyup', saveSelection);
 editor.addEventListener('focus', saveSelection);
 
-/* ══════════════════════════════════════════════
-   POPUP POSITIONING
-══════════════════════════════════════════════ */
 function positionFixed(el, anchorRect, margin) {
   margin = margin || 8;
   const vw = window.innerWidth;
@@ -1206,9 +1160,6 @@ function positionFixed(el, anchorRect, margin) {
   el.style.left = left + 'px';
 }
 
-/* ══════════════════════════════════════════════
-   LINK POPUP
-══════════════════════════════════════════════ */
 const linkPopup       = document.getElementById('link-popup');
 const linkPopupAnchor = document.getElementById('link-popup-anchor');
 let   currentLinkEl   = null;
@@ -1258,9 +1209,6 @@ document.getElementById('link-popup-remove').addEventListener('click', () => {
   hideLinkPopup();
 });
 
-/* ══════════════════════════════════════════════
-   TABLE CONTEXT MENU
-══════════════════════════════════════════════ */
 const cellMenu   = document.getElementById('cell-menu');
 let   activeTd   = null;
 
@@ -1348,9 +1296,6 @@ document.getElementById('cm-del-col').addEventListener('click', () => {
   hideCellMenu();
 });
 
-/* ══════════════════════════════════════════════
-   MODALS
-══════════════════════════════════════════════ */
 function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -1360,7 +1305,6 @@ function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
   });
 });
 
-/* Link */
 document.getElementById('btn-link').addEventListener('click', () => {
   saveSelection(); document.getElementById('link-url').value = '';
   openModal('modal-link'); setTimeout(() => document.getElementById('link-url').focus(), 50);
@@ -1375,7 +1319,6 @@ document.getElementById('link-insert').addEventListener('click', () => {
   closeModal('modal-link'); updateCounter();
 });
 
-/* Image */
 document.getElementById('btn-image').addEventListener('click', () => {
   saveSelection(); document.getElementById('image-url').value = ''; document.getElementById('image-link').value = '';
   openModal('modal-image'); setTimeout(() => document.getElementById('image-url').focus(), 50);
@@ -1386,13 +1329,12 @@ document.getElementById('image-insert').addEventListener('click', () => {
   const href = document.getElementById('image-link').value.trim();
   if (!src) return;
   restoreSelection();
-  let html = `<img src="${escAttr(src)}" alt="" loading="lazy">`;
-  if (href) html = `<a href="${escAttr(href)}" target="_blank" rel="noopener">${html}</a>`;
+  let html = '<img src="' + escAttr(src) + '" alt="" loading="lazy">';
+  if (href) html = '<a href="' + escAttr(href) + '" target="_blank" rel="noopener">' + html + '</a>';
   document.execCommand('insertHTML', false, '<p>' + html + '</p>');
   closeModal('modal-image'); updateCounter();
 });
 
-/* Video */
 document.getElementById('btn-video').addEventListener('click', () => {
   saveSelection(); document.getElementById('video-url').value = '';
   openModal('modal-video'); setTimeout(() => document.getElementById('video-url').focus(), 50);
@@ -1403,11 +1345,10 @@ document.getElementById('video-insert').addEventListener('click', () => {
   if (!src) return;
   restoreSelection();
   document.execCommand('insertHTML', false,
-    `<p><video src="${escAttr(src)}" controls playsinline style="max-width:100%;border-radius:4px"></video></p>`);
+    '<p><video src="' + escAttr(src) + '" controls playsinline style="max-width:100%;border-radius:4px"></video></p>');
   closeModal('modal-video'); updateCounter();
 });
 
-/* Embed */
 document.getElementById('btn-embed').addEventListener('click', () => {
   saveSelection(); document.getElementById('embed-url').value = '';
   openModal('modal-embed'); setTimeout(() => document.getElementById('embed-url').focus(), 50);
@@ -1424,14 +1365,13 @@ document.getElementById('embed-insert').addEventListener('click', () => {
 });
 function buildEmbed(url) {
   let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  if (m) return `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${m[1]}" frameborder="0" allowfullscreen style="border-radius:4px;display:block"></iframe>`;
+  if (m) return '<iframe width="100%" height="315" src="https://www.youtube.com/embed/' + m[1] + '" frameborder="0" allowfullscreen style="border-radius:4px;display:block"></iframe>';
   m = url.match(/open\.spotify\.com\/(track|album|playlist|episode)\/([A-Za-z0-9]+)/);
-  if (m) return `<iframe src="https://open.spotify.com/embed/${m[1]}/${m[2]}" width="100%" height="152" frameborder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" style="border-radius:12px;display:block"></iframe>`;
-  if (url.includes('soundcloud.com')) return `<iframe width="100%" height="166" src="https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ff5500" frameborder="0" style="display:block"></iframe>`;
-  return `<iframe src="${escAttr(url)}" width="100%" height="315" frameborder="0" allowfullscreen style="border-radius:4px;display:block"></iframe>`;
+  if (m) return '<iframe src="https://open.spotify.com/embed/' + m[1] + '/' + m[2] + '" width="100%" height="152" frameborder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" style="border-radius:12px;display:block"></iframe>';
+  if (url.includes('soundcloud.com')) return '<iframe width="100%" height="166" src="https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) + '&color=%23ff5500" frameborder="0" style="display:block"></iframe>';
+  return '<iframe src="' + escAttr(url) + '" width="100%" height="315" frameborder="0" allowfullscreen style="border-radius:4px;display:block"></iframe>';
 }
 
-/* Table */
 document.getElementById('btn-table').addEventListener('click', () => {
   saveSelection(); openModal('modal-table');
   setTimeout(() => document.getElementById('table-rows').focus(), 50);
@@ -1452,7 +1392,6 @@ document.getElementById('table-insert').addEventListener('click', () => {
   closeModal('modal-table'); updateCounter();
 });
 
-/* LaTeX */
 document.getElementById('btn-latex').addEventListener('click', () => {
   saveSelection();
   document.getElementById('latex-formula').value = '';
@@ -1487,9 +1426,6 @@ document.getElementById('latex-insert').addEventListener('click', () => {
   } catch(e) { showToast('خطا در فرمول: ' + e.message, true); }
 });
 
-/* ══════════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════════ */
 let toastTimer;
 function showToast(msg, isError=false) {
   const t = document.getElementById('toast');
@@ -1499,10 +1435,6 @@ function showToast(msg, isError=false) {
   toastTimer = setTimeout(() => { t.className = 'toast'; }, 3500);
 }
 
-/* ══════════════════════════════════════════════
-/* ══════════════════════════════════════════════
-   SUBMIT
-══════════════════════════════════════════════ */
 document.getElementById('btn-submit').addEventListener('click', async () => {
   const title        = document.getElementById('f-title').value.trim();
   const banner       = document.getElementById('f-banner').value.trim();
@@ -1512,27 +1444,31 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
   const plainText    = getEditorText().replace(/\n/g,'').length;
   const mediaCount   = editor.querySelectorAll('img,video,iframe').length * MEDIA_WEIGHT;
   const totalChars   = plainText + mediaCount;
+  const date         = new Date().toISOString().slice(0, 10);
 
-  if (!title)            { showToast('عنوان مطلب را وارد کنید.', true); return; }
-  if (!authorName)       { showToast('ابتدا پروفایل خود را ذخیره کنید.', true); return; }
-  if (plainText < 100)   { showToast('متن مطلب باید حداقل ۱۰۰ کاراکتر باشد.', true); return; }
-  if (totalChars > 1000) { showToast('متن مطلب از ۱۰۰۰ کاراکتر بیشتر است.', true); return; }
+  if (!title)                 { showToast('عنوان مطلب را وارد کنید.', true); return; }
+  if (!authorName)            { showToast('ابتدا پروفایل خود را ذخیره کنید.', true); return; }
+  if (plainText < MIN_CHARS)  { showToast('متن مطلب باید حداقل ' + MIN_CHARS + ' کاراکتر باشد.', true); return; }
+  if (totalChars > MAX_CHARS) { showToast('متن مطلب از ' + MAX_CHARS + ' کاراکتر بیشتر است.', true); return; }
 
   const btn = document.getElementById('btn-submit');
   const lbl = document.getElementById('btn-label');
   try {
+    btn.disabled = true;
+    btn.classList.add('loading');
     lbl.textContent = 'ارسال…';
+
     const formData = new FormData();
     formData.append('access_key', 'ba791533-8f31-4e44-9407-f5dc45b4d722');
-    formData.append('subject', `پست جدید Maborai: ${title}`);
+    formData.append('subject', 'پست جدید Maborai: ' + title);
     formData.append('from_name', authorName);
     formData.append('message',
-      `عنوان: ${title}` +
-      (banner ? `\nبنر: ${banner}` : '') +
-      `\nنویسنده: ${authorName}` +
-      (authorAvatar ? `\nآواتار: ${authorAvatar}` : '') +
-      `\nتاریخ: ${date}` +
-      `\n\n--- محتوا ---\n${content}`
+      'عنوان: ' + title +
+      (banner ? '\nبنر: ' + banner : '') +
+      '\nنویسنده: ' + authorName +
+      (authorAvatar ? '\nآواتار: ' + authorAvatar : '') +
+      '\nتاریخ: ' + date +
+      '\n\n--- محتوا (HTML) ---\n' + content
     );
 
     const w3res = await fetch('https://api.web3forms.com/submit', {
@@ -1557,14 +1493,10 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
   }
 });
 
-/* ════ UTILS ════ */
 function escAttr(s) {
   return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-/* ══════════════════════════════════════════════
-   UNSAVED CHANGES WARNING
-══════════════════════════════════════════════ */
 let formDirty = false;
 editor.addEventListener('input', () => { formDirty = true; });
 document.getElementById('f-title').addEventListener('input', () => { formDirty = true; });
