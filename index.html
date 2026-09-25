@@ -10,14 +10,16 @@
 
 <script>
 (function(){
-  var t = localStorage.getItem('theme') ||
-          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const saved = localStorage.getItem('theme');
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-  document.documentElement.setAttribute('data-theme', t);
+  document.documentElement.setAttribute(
+    'data-theme',
+    saved || (systemDark ? 'dark' : 'light')
+  );
 })();
 </script>
 
-<!-- DOMPurify -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 
 </head>
@@ -81,17 +83,13 @@
     >
       <span>New post</span>
 
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M5 12h14"/>
       </svg>
     </a>
 
   </div>
+
 </header>
 
 
