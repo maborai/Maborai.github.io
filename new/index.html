@@ -744,7 +744,7 @@
 /* ══════════════════════════════════════════════
    CONFIG
 ══════════════════════════════════════════════ */
-const GIST_TOKEN  = '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';
+const GIST_TOKEN  = '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';
 const ADMIN_EMAIL = 'Maborai.sp@gmail.com';
 
 /* ── Theme ── */
@@ -1569,7 +1569,7 @@ async function createGist(title, postData) {
       public: false,
       files: {
         'post.json': {
-          content: JSON.stringify(postData, null, 2)
+          content: JSON.stringify([postData], null, 2)
         }
       }
     })
