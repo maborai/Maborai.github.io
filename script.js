@@ -1,295 +1,965 @@
-/* ============================================================
-   Maborai — script.js
-   ============================================================ */
+/* =========================================================
+   HELPERS
+========================================================= */
 
-'use strict';
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
 
-/* ----------------------------------------------------------
-   1. Theme toggle
-   ---------------------------------------------------------- */
+function escapeAttr(str = '') {
+  return escapeHtml(str)
+    .replace(/"/g, '&quot;');
+}
 
-(function () {
-  const root = document.documentElement;
-  const btn  = document.getElementById('theme-toggle');
-  const logo = document.getElementById('logo-img');
 
-  function applyTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    try { localStorage.setItem('theme', theme); } catch (_) {}
-    if (logo) {
-      logo.src = theme === 'dark' ? 'logo-dark.png' : 'logo-light.png';
-    }
+/* =========================================================
+   THEME
+========================================================= */
+
+const root = document.documentElement;
+const themeToggle = document.getElementById('theme-toggle');
+const logoImg = document.getElementById('logo-img');
+
+function applyTheme(theme) {
+
+  root.setAttribute('data-theme', theme);
+
+  if (logoImg) {
+    logoImg.src =
+      theme === 'dark'
+        ? 'logo-dark.png'
+        : 'logo-light.png';
   }
 
-  if (btn) {
-    btn.addEventListener('click', () => {
-      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      applyTheme(next);
-    });
-  }
+  localStorage.setItem('theme', theme);
+}
 
-  /* Sync logo on first load */
-  if (logo) {
-    const current = root.getAttribute('data-theme') || 'dark';
-    logo.src = current === 'dark' ? 'logo-dark.png' : 'logo-light.png';
-  }
-})();
+const savedTheme = localStorage.getItem('theme');
 
+const systemPrefersDark =
+  window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-/* ----------------------------------------------------------
-   2. Search bar toggle
-   ---------------------------------------------------------- */
+applyTheme(
+  savedTheme ||
+  (systemPrefersDark ? 'dark' : 'light')
+);
 
-(function () {
-  const toggleBtn = document.getElementById('search-toggle');
-  const searchBar = document.getElementById('search-bar');
-  const input     = document.getElementById('search-input');
+if (themeToggle) {
 
-  if (!toggleBtn || !searchBar) return;
+  themeToggle.addEventListener('click', () => {
 
-  toggleBtn.addEventListener('click', () => {
-    const hidden = searchBar.classList.toggle('hidden');
-    if (!hidden && input) input.focus();
+    const current =
+      root.getAttribute('data-theme');
+
+    applyTheme(
+      current === 'dark'
+        ? 'light'
+        : 'dark'
+    );
+
   });
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !searchBar.classList.contains('hidden')) {
-      searchBar.classList.add('hidden');
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+const searchToggle =
+  document.getElementById('search-toggle');
+
+const searchBar =
+  document.getElementById('search-bar');
+
+const searchInput =
+  document.getElementById('search-input');
+
+const dateFilter =
+  document.getElementById('date-filter');
+
+if (searchToggle && searchBar) {
+
+  searchToggle.addEventListener('click', () => {
+
+    searchBar.classList.toggle('hidden');
+
+    if (!searchBar.classList.contains('hidden')) {
+
+      if (searchInput) {
+        searchInput.focus();
+      }
+
     }
+
   });
-})();
+
+}
 
 
-/* ----------------------------------------------------------
-   3. Data — fetch from index.json
-   ---------------------------------------------------------- */
+/* =========================================================
+   POSTS
+========================================================= */
 
-/*
-  index.json schema (per item):
-  {
-    title        : string
-    authorName   : string
-    authorAvatar : string (URL)
-    content      : string (HTML)
-    date         : string (YYYY-MM-DD)
-    pinned       : boolean
-    banner       : string (URL, optional)
-  }
-*/
+const listEl =
+  document.getElementById('post-list');
 
-const PAGE_SIZE = 10;
+const emptyEl =
+  document.getElementById('empty-state');
+
+const PAGE_SIZE = 25;
+
+const PAGER_ENABLED = false;
+
+let allPosts = [];
+
 let currentPage = 1;
-let cachedPosts = null;   /* in-memory cache after first fetch */
 
-async function fetchPosts() {
-  if (cachedPosts) return cachedPosts;
+let currentFiltered = [];
+
+
+const pagerEl =
+  document.getElementById('pager');
+
+const prevBtn =
+  document.getElementById('prev-page');
+
+const nextBtn =
+  document.getElementById('next-page');
+
+const pageLabel =
+  document.getElementById('page-label');
+
+
+/* =========================================================
+   LOAD POSTS
+========================================================= */
+
+async function loadPosts() {
+
   try {
-    const res = await fetch('index.json');
-    if (!res.ok) throw new Error('fetch failed');
-    const data = await res.json();
-    /* Normalise field names to internal format */
-    cachedPosts = data.map((p, i) => ({
-      id     : String(i),
-      title  : p.title        || '',
-      author : p.authorName   || 'ناشناس',
-      avatar : p.authorAvatar || '',
-      body   : p.content      || '',
-      date   : p.date         || '',
-      pinned : p.pinned       || false,
-      banner : p.banner       || '',
-    }));
-    return cachedPosts;
-  } catch (err) {
-    console.error('Maborai: could not load index.json', err);
-    return [];
-  }
-}
 
+    const res =
+      await fetch('index.json', {
+        cache: 'no-store'
+      });
 
-/* ----------------------------------------------------------
-   4. Rendering helpers
-   ---------------------------------------------------------- */
+    if (!res.ok) {
+      throw new Error('index.json not found');
+    }
 
-/* Sanitise HTML with DOMPurify if available */
-function sanitise(html) {
-  if (window.DOMPurify) {
-    return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
-  }
-  return html;
-}
+    const data =
+      await res.json();
 
-/* Format ISO date → Persian */
-function formatDate(iso) {
-  if (!iso) return '';
-  try {
-    return new Date(iso).toLocaleDateString('fa-IR', {
-      year: 'numeric', month: 'long', day: 'numeric'
+    allPosts = Array.isArray(data)
+      ? data
+      : [];
+
+    allPosts.sort((a, b) => {
+
+      if (a.pinned && !b.pinned) {
+        return -1;
+      }
+
+      if (!a.pinned && b.pinned) {
+        return 1;
+      }
+
+      return new Date(b.date) -
+             new Date(a.date);
+
     });
-  } catch (_) {
-    return iso;
+
+    render(allPosts);
+
+  } catch (err) {
+
+    console.error(err);
+
+    if (listEl) {
+      listEl.innerHTML = '';
+    }
+
+    if (emptyEl) {
+
+      emptyEl.hidden = false;
+
+      emptyEl.textContent =
+        'Failed to load posts.';
+
+    }
+
   }
+
 }
 
-/* Strip HTML tags to make a plain-text excerpt */
-function makeExcerpt(html, maxLen = 160) {
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  const text = (div.textContent || '').trim().replace(/\s+/g, ' ');
-  return text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(dateStr) {
+
+  try {
+
+    return new Intl.DateTimeFormat(
+      'en-US',
+      {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }
+    ).format(new Date(dateStr));
+
+  } catch {
+
+    return dateStr;
+
+  }
+
 }
 
-function buildPostCard(post) {
-  const card = document.createElement('article');
-  card.className = 'post-card';
-  card.dataset.id = post.id;
 
-  const bannerHTML = post.banner
-    ? `<img class="post-banner" src="${post.banner}" alt="">`
-    : '';
+/* =========================================================
+   RENDER
+========================================================= */
 
-  const pinHTML = post.pinned
-    ? `<svg class="pin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-       </svg>`
-    : '';
+function render(posts) {
 
-  const avatarHTML = post.avatar
-    ? `<img class="author-avatar" src="${post.avatar}" alt="${post.author}">`
-    : `<div class="author-avatar"></div>`;
+  currentFiltered = posts;
 
-  const excerpt = makeExcerpt(post.body);
+  currentPage = 1;
+
+  renderPage();
+
+}
+
+
+function renderPage() {
+
+  if (!listEl) return;
+
+  listEl.innerHTML = '';
+
+  if (!currentFiltered.length) {
+
+    if (emptyEl) {
+
+      emptyEl.hidden = false;
+
+      emptyEl.textContent =
+        'No posts found.';
+
+    }
+
+    if (pagerEl) {
+      pagerEl.hidden = true;
+    }
+
+    return;
+
+  }
+
+  if (emptyEl) {
+    emptyEl.hidden = true;
+  }
+
+  const totalPages =
+    Math.max(
+      1,
+      Math.ceil(
+        currentFiltered.length /
+        PAGE_SIZE
+      )
+    );
+
+  currentPage =
+    Math.min(
+      currentPage,
+      totalPages
+    );
+
+  const start =
+    (currentPage - 1) *
+    PAGE_SIZE;
+
+  const pagePosts =
+    currentFiltered.slice(
+      start,
+      start + PAGE_SIZE
+    );
+
+  const frag =
+    document.createDocumentFragment();
+
+  pagePosts.forEach(post => {
+
+    frag.appendChild(
+      buildCard(post)
+    );
+
+  });
+
+  listEl.appendChild(frag);
+
+  if (pagerEl) {
+    pagerEl.hidden =
+      !PAGER_ENABLED;
+  }
+
+  if (prevBtn) {
+    prevBtn.disabled =
+      currentPage <= 1;
+  }
+
+  if (nextBtn) {
+    nextBtn.disabled =
+      currentPage >= totalPages;
+  }
+
+  if (pageLabel) {
+    pageLabel.textContent =
+      `Page ${currentPage} of ${totalPages}`;
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'instant'
+  });
+
+}
+
+
+/* =========================================================
+   BUILD POST
+========================================================= */
+
+function buildCard(post) {
+
+  const card =
+    document.createElement('article');
+
+  card.className =
+    'post-card';
+
+  let bodyHtml = '';
+
+  if (post.content) {
+
+    bodyHtml =
+      typeof DOMPurify !== 'undefined'
+        ? DOMPurify.sanitize(post.content)
+        : post.content;
+
+  } else if (post.excerpt) {
+
+    bodyHtml =
+      escapeHtml(post.excerpt);
+
+  }
+
 
   card.innerHTML = `
-    ${bannerHTML}
-    <h2 class="post-title">${post.title || 'بدون عنوان'}</h2>
-    ${excerpt ? `<p class="post-excerpt">${excerpt}</p>` : ''}
-    <button class="btn-readmore" data-id="${post.id}">ادامه مطلب</button>
-    <div class="post-body" hidden></div>
-    <div class="post-footer">
-      <div class="post-meta">
-        ${avatarHTML}
-        <span class="author-name">${post.author}</span>
-      </div>
-      <span class="post-date">
-        ${pinHTML}
-        ${formatDate(post.date)}
-      </span>
+
+    ${
+      post.banner
+        ? `
+          <img
+            class="post-banner"
+            src="${escapeAttr(post.banner)}"
+            alt=""
+            loading="lazy"
+            onerror="this.style.display='none'"
+          >
+        `
+        : ''
+    }
+
+    <h2 class="post-title">
+      ${escapeHtml(post.title || '')}
+    </h2>
+
+    <div class="post-body">
+      ${bodyHtml}
     </div>
+
+    <div class="post-footer">
+
+      <div class="post-meta">
+
+        ${
+          post.authorAvatar
+            ? `
+              <img
+                class="author-avatar"
+                src="${escapeAttr(post.authorAvatar)}"
+                alt=""
+                loading="lazy"
+                onerror="this.style.display='none'"
+              >
+            `
+            : ''
+        }
+
+        <span class="author-name">
+          ${escapeHtml(post.authorName || '')}
+        </span>
+
+      </div>
+
+      <span class="post-date">
+
+        ${
+          post.pinned
+            ? `
+              <svg
+                class="pin-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6Z"/>
+              </svg>
+              Pinned post
+            `
+            : formatDate(post.date)
+        }
+
+      </span>
+
+    </div>
+
   `;
 
-  const btn  = card.querySelector('.btn-readmore');
-  const body = card.querySelector('.post-body');
 
-  btn.addEventListener('click', () => {
-    if (!body.hidden) {
-      body.hidden = true;
-      body.innerHTML = '';
-      btn.textContent = 'ادامه مطلب';
-    } else {
-      body.innerHTML = sanitise(post.body);
-      body.hidden = false;
-      btn.textContent = 'بستن';
-    }
-  });
+  setupCodeBlocks(card);
 
   return card;
+
 }
 
 
-/* ----------------------------------------------------------
-   5. Sort + filter
-   ---------------------------------------------------------- */
+/* =========================================================
+   CODE BLOCKS
+   No syntax highlighting
+========================================================= */
 
-function getSorted(posts) {
-  return [...posts].sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return  1;
-    /* newest date first */
-    return (b.date || '').localeCompare(a.date || '');
-  });
-}
+function setupCodeBlocks(container) {
 
-function applyFilter(posts, query, dateVal) {
-  let result = getSorted(posts);
-  if (query) {
-    const q = query.toLowerCase();
-    result = result.filter(p =>
-      p.title.toLowerCase().includes(q)  ||
-      p.author.toLowerCase().includes(q) ||
-      makeExcerpt(p.body).toLowerCase().includes(q)
+  const codeBlocks =
+    container.querySelectorAll(
+      'pre code'
     );
-  }
-  if (dateVal) {
-    result = result.filter(p => p.date === dateVal);
-  }
-  return result;
+
+  codeBlocks.forEach((code, index) => {
+
+    const pre =
+      code.closest('pre');
+
+    if (!pre) return;
+
+
+    /* -----------------------------------------
+       Line numbers
+    ----------------------------------------- */
+
+    addLineNumbers(
+      pre,
+      code
+    );
+
+
+    /* -----------------------------------------
+       Code dots
+    ----------------------------------------- */
+
+    if (
+      !pre.querySelector('.code-dots')
+    ) {
+
+      const dots =
+        document.createElement('div');
+
+      dots.className =
+        'code-dots';
+
+      dots.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+      `;
+
+      pre.appendChild(dots);
+
+    }
+
+
+    /* -----------------------------------------
+       Buttons
+    ----------------------------------------- */
+
+    if (
+      !pre.querySelector('.code-actions')
+    ) {
+
+      const actions =
+        document.createElement('div');
+
+      actions.className =
+        'code-actions';
+
+
+      /* Copy */
+
+      const copyButton =
+        document.createElement('button');
+
+      copyButton.type =
+        'button';
+
+      copyButton.className =
+        'code-action';
+
+      copyButton.title =
+        'Copy code';
+
+      copyButton.innerHTML = `
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect
+            x="9"
+            y="9"
+            width="13"
+            height="13"
+            rx="2"
+          />
+
+          <path
+            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+          />
+        </svg>
+
+        <span>Copy</span>
+      `;
+
+
+      copyButton.addEventListener(
+        'click',
+        async () => {
+
+          const text =
+            code.textContent || '';
+
+          const success =
+            await copyText(text);
+
+          if (!success) return;
+
+          const oldHtml =
+            copyButton.innerHTML;
+
+          copyButton.innerHTML = `
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="m5 12 4 4L19 6"/>
+            </svg>
+
+            <span>Copied</span>
+          `;
+
+          setTimeout(() => {
+
+            copyButton.innerHTML =
+              oldHtml;
+
+          }, 1200);
+
+        }
+      );
+
+
+      /* Download */
+
+      const downloadButton =
+        document.createElement('button');
+
+      downloadButton.type =
+        'button';
+
+      downloadButton.className =
+        'code-action';
+
+      downloadButton.title =
+        'Download TXT';
+
+      downloadButton.innerHTML = `
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 3v12"/>
+          <path d="m7 10 5 5 5-5"/>
+          <path d="M5 21h14"/>
+        </svg>
+
+        <span>TXT</span>
+      `;
+
+
+      downloadButton.addEventListener(
+        'click',
+        () => {
+
+          downloadCode(
+            code.textContent || '',
+            `code-${index + 1}.txt`
+          );
+
+        }
+      );
+
+
+      actions.appendChild(
+        copyButton
+      );
+
+      actions.appendChild(
+        downloadButton
+      );
+
+      pre.appendChild(actions);
+
+    }
+
+  });
+
 }
 
 
-/* ----------------------------------------------------------
-   6. Render list + pagination
-   ---------------------------------------------------------- */
+/* =========================================================
+   LINE NUMBERS
+========================================================= */
 
-function renderList(filtered) {
-  const list      = document.getElementById('post-list');
-  const empty     = document.getElementById('empty-state');
-  const pager     = document.getElementById('pager');
-  const prevBtn   = document.getElementById('prev-page');
-  const nextBtn   = document.getElementById('next-page');
-  const pageLabel = document.getElementById('page-label');
+function addLineNumbers(pre, code) {
 
-  if (!list) return;
-  list.innerHTML = '';
-
-  if (!filtered.length) {
-    if (empty) empty.hidden = false;
-    if (pager) pager.hidden = true;
+  if (
+    pre.querySelector('.line-number-list')
+  ) {
     return;
   }
 
-  if (empty) empty.hidden = true;
+  const text =
+    code.textContent || '';
 
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-  currentPage = Math.max(1, Math.min(currentPage, totalPages));
+  const lineCount =
+    Math.max(
+      1,
+      text.split('\n').length
+    );
 
-  const slice = filtered.slice(
-    (currentPage - 1) * PAGE_SIZE,
-     currentPage      * PAGE_SIZE
-  );
 
-  slice.forEach(p => list.appendChild(buildPostCard(p)));
+  const numbers =
+    document.createElement('div');
 
-  if (pager) {
-    pager.hidden = totalPages <= 1;
-    if (pageLabel) pageLabel.textContent = `صفحه ${currentPage} از ${totalPages}`;
-    if (prevBtn)   prevBtn.disabled = currentPage === 1;
-    if (nextBtn)   nextBtn.disabled = currentPage === totalPages;
+  numbers.className =
+    'line-number-list';
+
+  for (
+    let i = 1;
+    i <= lineCount;
+    i++
+  ) {
+
+    const line =
+      document.createElement('span');
+
+    line.textContent =
+      i;
+
+    numbers.appendChild(line);
+
   }
+
+  pre.appendChild(numbers);
+
 }
 
 
-/* ----------------------------------------------------------
-   7. Wire everything together
-   ---------------------------------------------------------- */
+/* =========================================================
+   COPY
+========================================================= */
 
-(async function init() {
-  const searchInput = document.getElementById('search-input');
-  const dateFilter  = document.getElementById('date-filter');
-  const prevBtn     = document.getElementById('prev-page');
-  const nextBtn     = document.getElementById('next-page');
+async function copyText(text) {
 
-  const posts = await fetchPosts();
+  try {
 
-  function refresh() {
-    const query   = searchInput ? searchInput.value.trim() : '';
-    const dateVal = dateFilter  ? dateFilter.value         : '';
-    renderList(applyFilter(posts, query, dateVal));
+    if (
+      navigator.clipboard &&
+      window.isSecureContext
+    ) {
+
+      await navigator.clipboard.writeText(
+        text
+      );
+
+      return true;
+
+    }
+
+  } catch (err) {
+
+    console.warn(
+      'Clipboard API failed:',
+      err
+    );
+
   }
 
-  if (searchInput) searchInput.addEventListener('input',  () => { currentPage = 1; refresh(); });
-  if (dateFilter)  dateFilter.addEventListener('change',  () => { currentPage = 1; refresh(); });
-  if (prevBtn)     prevBtn.addEventListener('click',      () => { currentPage--;   refresh(); });
-  if (nextBtn)     nextBtn.addEventListener('click',      () => { currentPage++;   refresh(); });
 
-  refresh();
-})();
+  return fallbackCopy(text);
+
+}
+
+
+function fallbackCopy(text) {
+
+  try {
+
+    const textarea =
+      document.createElement('textarea');
+
+    textarea.value =
+      text;
+
+    textarea.style.position =
+      'fixed';
+
+    textarea.style.opacity =
+      '0';
+
+    document.body.appendChild(
+      textarea
+    );
+
+    textarea.focus();
+
+    textarea.select();
+
+    const success =
+      document.execCommand('copy');
+
+    textarea.remove();
+
+    return success;
+
+  } catch {
+
+    return false;
+
+  }
+
+}
+
+
+/* =========================================================
+   DOWNLOAD TXT
+========================================================= */
+
+function downloadCode(
+  text,
+  filename
+) {
+
+  const blob =
+    new Blob(
+      [text],
+      {
+        type:
+          'text/plain;charset=utf-8'
+      }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement('a');
+
+  link.href = url;
+
+  link.download =
+    filename;
+
+  document.body.appendChild(
+    link
+  );
+
+  link.click();
+
+  link.remove();
+
+  setTimeout(() => {
+
+    URL.revokeObjectURL(url);
+
+  }, 1000);
+
+}
+
+
+/* =========================================================
+   PAGER
+========================================================= */
+
+if (prevBtn) {
+
+  prevBtn.addEventListener(
+    'click',
+    () => {
+
+      if (currentPage > 1) {
+
+        currentPage--;
+
+        renderPage();
+
+      }
+
+    }
+  );
+
+}
+
+
+if (nextBtn) {
+
+  nextBtn.addEventListener(
+    'click',
+    () => {
+
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            currentFiltered.length /
+            PAGE_SIZE
+          )
+        );
+
+      if (
+        currentPage < totalPages
+      ) {
+
+        currentPage++;
+
+        renderPage();
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+function applyFilters() {
+
+  const q =
+    searchInput
+      ? searchInput.value
+          .trim()
+          .toLowerCase()
+      : '';
+
+  const dateVal =
+    dateFilter
+      ? dateFilter.value
+      : '';
+
+
+  const filtered =
+    allPosts.filter(post => {
+
+      const matchesQuery =
+        !q ||
+
+        (post.title || '')
+          .toLowerCase()
+          .includes(q) ||
+
+        (post.excerpt || '')
+          .toLowerCase()
+          .includes(q) ||
+
+        (post.content || '')
+          .toLowerCase()
+          .includes(q) ||
+
+        (post.authorName || '')
+          .toLowerCase()
+          .includes(q);
+
+
+      const matchesDate =
+        !dateVal ||
+        (
+          post.date &&
+          post.date.slice(0, 10) === dateVal
+        );
+
+
+      return (
+        matchesQuery &&
+        matchesDate
+      );
+
+    });
+
+
+  render(filtered);
+
+}
+
+
+if (searchInput) {
+
+  searchInput.addEventListener(
+    'input',
+    applyFilters
+  );
+
+}
+
+if (dateFilter) {
+
+  dateFilter.addEventListener(
+    'change',
+    applyFilters
+  );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+loadPosts();
