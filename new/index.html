@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پست جدید </title>
+<title>پست جدید — Maborai</title>
 <link rel="stylesheet" href="../style.css">
 <script>
   (function(){
@@ -383,7 +383,7 @@
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
       </button>
       <a href="https://maborai.github.io" class="btn-new" title="بازگشت" aria-label="بازگشت">
-        <span>Home</span>
+        <span>بازگشت</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5Z"/><path d="M9 21V12h6v9"/></svg>
       </a>
     </div>
@@ -749,72 +749,55 @@
     'Authorization': `Bearer ${GITHUB_TOKEN}`,
     'Content-Type': 'application/json',
     'User-Agent': 'Maborai-Blog',
+    'X-GitHub-Api-Version': '2022-11-28',
   };
 
-  // ۱. fork بساز (اگه قبلاً وجود داشت همونو برمیگردونه)
-  async function ensureFork() {
-    const res  = await fetch(`https://api.github.com/repos/${REPO}/forks`, {
-      method: 'POST',
-      headers: GH_HEADERS,
-      body: JSON.stringify({}),
-    });
+  // ۱. SHA آخرین commit از main بگیر
+  async function getMainSha() {
+    const res  = await fetch(`https://api.github.com/repos/${REPO}/git/ref/heads/main`, { headers: GH_HEADERS });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'خطا در ساخت fork');
-    return data.full_name; // مثلاً: maborai-bot/Maborai.github.io
+    if (!res.ok) throw new Error(data.message || 'خطا در دریافت SHA');
+    return data.object.sha;
   }
 
-  // ۲. index.json رو از fork بخون
-  async function getIndexFromFork(forkRepo) {
-    // اول fork رو با main sync کن
-    await fetch(`https://api.github.com/repos/${forkRepo}/merge-upstream`, {
+  // ۲. branch جدید بساز
+  async function createBranch(branchName, sha) {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/git/refs`, {
       method: 'POST',
       headers: GH_HEADERS,
-      body: JSON.stringify({ branch: 'main' }),
+      body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha }),
     });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'خطا در ساخت branch');
+  }
 
-    const res  = await fetch(`https://api.github.com/repos/${forkRepo}/contents/index.json`, { headers: GH_HEADERS });
+  // ۳. index.json رو از main بخون
+  async function getIndexJson() {
+    const res  = await fetch(`https://api.github.com/repos/${REPO}/contents/index.json`, { headers: GH_HEADERS });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'خطا در خواندن index.json');
     const posts = JSON.parse(atob(data.content.replace(/\n/g, '')));
     return { posts, sha: data.sha };
   }
 
-  // ۳. index.json رو توی fork آپدیت کن
-  async function updateIndexInFork(forkRepo, posts, sha, branchName, commitMsg) {
-    // branch جدید توی fork بساز
-    const refRes  = await fetch(`https://api.github.com/repos/${forkRepo}/git/ref/heads/main`, { headers: GH_HEADERS });
-    const refData = await refRes.json();
-    if (!refRes.ok) throw new Error(refData.message || 'خطا در دریافت SHA');
-
-    await fetch(`https://api.github.com/repos/${forkRepo}/git/refs`, {
-      method: 'POST',
-      headers: GH_HEADERS,
-      body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha: refData.object.sha }),
-    });
-
-    // فایل رو توی اون branch بنویس
+  // ۴. index.json رو توی branch جدید بنویس
+  async function updateIndexInBranch(branchName, posts, fileSha, commitMsg) {
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2))));
-    const res = await fetch(`https://api.github.com/repos/${forkRepo}/contents/index.json`, {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/index.json`, {
       method: 'PUT',
       headers: GH_HEADERS,
-      body: JSON.stringify({ message: commitMsg, content: encoded, sha, branch: branchName }),
+      body: JSON.stringify({ message: commitMsg, content: encoded, sha: fileSha, branch: branchName }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'خطا در آپدیت index.json');
   }
 
-  // ۴. PR از fork به ریپوی اصلی باز کن
-  async function openPR(forkRepo, branchName, title, body) {
-    const forkOwner = forkRepo.split('/')[0];
+  // ۵. PR باز کن
+  async function openPR(branchName, title, body) {
     const res = await fetch(`https://api.github.com/repos/${REPO}/pulls`, {
       method: 'POST',
       headers: GH_HEADERS,
-      body: JSON.stringify({
-        title,
-        head: `${forkOwner}:${branchName}`,
-        base: 'main',
-        body,
-      }),
+      body: JSON.stringify({ title, head: branchName, base: 'main', body }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'خطا در باز کردن PR');
@@ -848,25 +831,24 @@
       const branchName = `post-${Date.now()}`;
       const postData   = { title, banner, content, authorName, authorAvatar, date, pinned: false };
 
-      // ۱. fork بساز یا پیدا کن
-      lbl.textContent = 'آماده‌سازی…';
-      const forkRepo = await ensureFork();
+      // ۱. SHA آخرین commit
+      lbl.textContent = 'در حال آماده‌سازی…';
+      const mainSha = await getMainSha();
 
-      // کمی صبر کن تا fork آماده بشه
-      await new Promise(r => setTimeout(r, 3000));
+      // ۲. branch جدید بساز
+      await createBranch(branchName, mainSha);
 
-      // ۲. index.json رو از fork بخون
+      // ۳. index.json رو بخون
       lbl.textContent = 'در حال بارگذاری…';
-      const { posts, sha } = await getIndexFromFork(forkRepo);
+      const { posts, sha: fileSha } = await getIndexJson();
 
-      // ۳. پست جدید رو اضافه کن و توی fork بنویس
+      // ۴. پست جدید رو اضافه کن و توی branch بنویس
       posts.unshift(postData);
       lbl.textContent = 'در حال ارسال…';
-      await updateIndexInFork(forkRepo, posts, sha, branchName, `پست جدید: ${title}`);
+      await updateIndexInBranch(branchName, posts, fileSha, `پست جدید: ${title}`);
 
-      // ۴. PR باز کن
+      // ۵. PR باز کن
       await openPR(
-        forkRepo,
         branchName,
         `پست جدید: ${title}`,
         `**نویسنده:** ${authorName}\n**تاریخ:** ${date}`
