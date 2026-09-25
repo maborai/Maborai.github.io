@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -107,7 +108,7 @@
   }
   .tb-size-input:focus { border-color: var(--text-dim); color: var(--text); }
 
-  /* ════ COLOR PICKER — Combined hover + picker ════ */
+  /* ════ COLOR PICKER ════ */
   .color-picker-wrap { position: relative; }
 
   .color-picker-trigger {
@@ -130,7 +131,6 @@
     width: 20px; height: 3px; border-radius: 2px;
   }
 
-  /* Panel */
   .color-panel {
     position: absolute; top: calc(100% + 8px);
     right: 0; z-index: 300;
@@ -139,11 +139,9 @@
     width: 236px;
     box-shadow: 0 12px 32px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.1);
     display: none; flex-direction: column; gap: 12px;
-    /* RTL: open to left if near right edge — handled by JS */
   }
   .color-panel.open { display: flex; }
 
-  /* Hover grid row: presets side-by-side */
   .cp-presets-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -157,12 +155,10 @@
   .cp-preset:hover { transform: scale(1.12); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
   .cp-preset.selected { border-color: var(--text); }
 
-  /* Separator */
   .cp-sep {
     height: 1px; background: var(--border); margin: 0 -2px;
   }
 
-  /* Advanced picker toggle */
   .cp-advanced-toggle {
     display: flex; align-items: center; justify-content: space-between;
     cursor: pointer; user-select: none;
@@ -176,13 +172,11 @@
   }
   .cp-advanced-arrow.open { transform: rotate(180deg); }
 
-  /* Advanced section (collapsible) */
   .cp-advanced {
     display: none; flex-direction: column; gap: 10px;
   }
   .cp-advanced.open { display: flex; }
 
-  /* Hue + SV canvases */
   .cp-canvas-row {
     display: flex; align-items: center; gap: 8px;
   }
@@ -195,7 +189,6 @@
     border-radius: 8px; border: 1px solid var(--border);
   }
 
-  /* Hex row */
   .cp-hex-row {
     display: flex; align-items: center; gap: 6px;
   }
@@ -559,7 +552,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/></svg>
       </button>
 
-      <!-- LaTeX — fixed icon -->
       <button class="tb-btn" id="btn-latex" title="فرمول LaTeX" style="font-family:serif;font-size:13px;font-style:italic;letter-spacing:-1px;font-weight:400">
         ∑<sub style="font-size:8px">x</sub>
       </button>
@@ -621,13 +613,9 @@
 </div>
 
 <footer class="site-footer">
-  <nav class="footer-links">
-    <a href="/about">درباره اینجا</a>
-    <a href="https://blogix.ir/@maboroshi/chat">پشتیبانی</a>
-    <a href="/privacy">حریم خصوصی</a>
-    <a href="/terms">شرایط استفاده</a>
-  </nav>
-  <p>© 2026 کلیه حقوق این وب‌سایت متعلق به Maborai است.</p>
+  <p style="font-family:var(--font-fa);font-size:13px;color:var(--text-faint);text-align:center;margin:0">
+    ایجاد پست به معنای پذیرش <a href="/terms" style="color:var(--text-dim);text-decoration:underline;text-underline-offset:2px">شرایط استفاده</a> از Maborai است.
+  </p>
 </footer>
 
 <!-- Floating link popup -->
@@ -889,14 +877,12 @@ function buildColorPicker(cfg) {
   let currentHex = defaultColor;
   let [hue, sat, val] = defaultColor === 'transparent' ? [0,0,1] : hexToHsv(defaultColor);
 
-  /* Advanced toggle */
   document.getElementById(cfg.toggleId).addEventListener('click', () => {
     const open = advancedEl.classList.toggle('open');
     arrowEl.classList.toggle('open', open);
     if (open) { drawHue(); drawSV(); }
   });
 
-  /* Draw hue wheel */
   function drawHue() {
     const cx = 40, cy = 40, r = 38, innerR = 22;
     hueCtx.clearRect(0,0,80,80);
@@ -913,7 +899,6 @@ function buildColorPicker(cfg) {
     hueCtx.arc(cx,cy,innerR,0,Math.PI*2);
     hueCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-raised') || '#fff';
     hueCtx.fill();
-    /* pointer */
     const pr  = (r+innerR)/2;
     const px  = cx + pr * Math.cos(hue*Math.PI/180);
     const py  = cy + pr * Math.sin(hue*Math.PI/180);
@@ -923,7 +908,6 @@ function buildColorPicker(cfg) {
     hueCtx.fillStyle = `hsl(${hue},100%,50%)`; hueCtx.fill();
   }
 
-  /* Draw SV square */
   function drawSV() {
     svCtx.clearRect(0,0,svW,svH);
     const gH = svCtx.createLinearGradient(0,0,svW,0);
@@ -934,7 +918,6 @@ function buildColorPicker(cfg) {
     gV.addColorStop(0,'rgba(0,0,0,0)');
     gV.addColorStop(1,'#000');
     svCtx.fillStyle = gV; svCtx.fillRect(0,0,svW,svH);
-    /* pointer */
     const px = sat * svW;
     const py = (1 - val) * svH;
     svCtx.beginPath();
@@ -961,7 +944,6 @@ function buildColorPicker(cfg) {
     syncColor();
   }
 
-  /* Presets */
   presets.forEach(c => {
     const d = document.createElement('div');
     d.className = 'cp-preset';
@@ -983,7 +965,6 @@ function buildColorPicker(cfg) {
     presetsEl.appendChild(d);
   });
 
-  /* Hue wheel drag */
   let draggingHue = false;
   function onHue(e) {
     const rect = hueCanvas.getBoundingClientRect();
@@ -1001,7 +982,6 @@ function buildColorPicker(cfg) {
   document.addEventListener('mouseup', () => { draggingHue=false; });
   document.addEventListener('touchend', () => { draggingHue=false; });
 
-  /* SV square drag */
   let draggingSV = false;
   function onSV(e) {
     const rect = svCanvas.getBoundingClientRect();
@@ -1018,7 +998,6 @@ function buildColorPicker(cfg) {
   document.addEventListener('mouseup', () => { draggingSV=false; });
   document.addEventListener('touchend', () => { draggingSV=false; });
 
-  /* Hex input */
   hexInput.addEventListener('input', () => {
     const v = hexInput.value.trim();
     if (/^#[0-9a-fA-F]{6}$/.test(v)) {
@@ -1030,7 +1009,6 @@ function buildColorPicker(cfg) {
     }
   });
 
-  /* Apply button */
   applyBtn.addEventListener('click', () => {
     onApply(currentHex);
     barEl.style.background = currentHex === 'transparent'
@@ -1041,22 +1019,15 @@ function buildColorPicker(cfg) {
   syncColor();
 }
 
-/* ── Panel toggle with viewport-aware positioning ── */
+/* ── Panel toggle ── */
 function positionPanel(panel) {
-  // Reset first
   panel.style.right = '';
   panel.style.left = '';
   const rect  = panel.getBoundingClientRect();
   const vw    = window.innerWidth;
   const margin = 8;
-  if (rect.left < margin) {
-    panel.style.right = 'auto';
-    panel.style.left  = '0';
-  }
-  if (rect.right > vw - margin) {
-    panel.style.left  = 'auto';
-    panel.style.right = '0';
-  }
+  if (rect.left < margin) { panel.style.right = 'auto'; panel.style.left = '0'; }
+  if (rect.right > vw - margin) { panel.style.left = 'auto'; panel.style.right = '0'; }
 }
 
 function setupColorPanelToggle(triggerBtnId, panelId) {
@@ -1133,7 +1104,7 @@ function updateCounter() {
 editor.addEventListener('input', updateCounter);
 
 /* ══════════════════════════════════════════════
-   TOOLBAR — basic commands
+   TOOLBAR
 ══════════════════════════════════════════════ */
 document.querySelectorAll('[data-cmd]').forEach(btn => {
   btn.addEventListener('mousedown', e => {
@@ -1143,19 +1114,14 @@ document.querySelectorAll('[data-cmd]').forEach(btn => {
   });
 });
 
-/* ── Heading: fixed formatBlock ── */
 document.getElementById('tb-heading').addEventListener('change', function() {
-  const val = this.value; // e.g. 'H1'
+  const val = this.value;
   editor.focus();
-  if (val) {
-    document.execCommand('formatBlock', false, val);
-  } else {
-    document.execCommand('formatBlock', false, 'P');
-  }
+  if (val) { document.execCommand('formatBlock', false, val); }
+  else { document.execCommand('formatBlock', false, 'P'); }
   this.value = '';
 });
 
-/* ── Font size: fixed — wraps selection in <span style="font-size:Npx"> ── */
 document.getElementById('tb-fontsize').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') { e.preventDefault(); applyFontSize(this); }
 });
@@ -1171,20 +1137,16 @@ function applyFontSize(input) {
   const range = sel.getRangeAt(0);
   if (range.collapsed) return;
   try {
-    /* Wrap selection — but if it spans multiple nodes, surroundContents throws.
-       Use extractContents + wrap instead. */
     const fragment = range.extractContents();
     const span = document.createElement('span');
     span.style.fontSize = px + 'px';
     span.appendChild(fragment);
     range.insertNode(span);
-    /* Move caret after the span */
     range.setStartAfter(span);
     range.collapse(true);
     sel.removeAllRanges();
     sel.addRange(range);
   } catch(e) {
-    /* fallback: just set fontSize via execCommand font-size trick */
     document.execCommand('fontSize', false, '7');
     editor.querySelectorAll('font[size="7"]').forEach(f => {
       f.removeAttribute('size');
@@ -1195,7 +1157,6 @@ function applyFontSize(input) {
   updateCounter();
 }
 
-/* Quote / Code / HR */
 document.getElementById('btn-quote').addEventListener('mousedown', e => {
   e.preventDefault();
   document.execCommand('formatBlock', false, 'BLOCKQUOTE');
@@ -1230,26 +1191,18 @@ editor.addEventListener('keyup', saveSelection);
 editor.addEventListener('focus', saveSelection);
 
 /* ══════════════════════════════════════════════
-   POPUP SAFE POSITIONING (stays in viewport)
+   POPUP POSITIONING
 ══════════════════════════════════════════════ */
 function positionFixed(el, anchorRect, margin) {
   margin = margin || 8;
   const vw = window.innerWidth;
-  const vh = window.innerHeight;
   const pw = el.offsetWidth  || 240;
   const ph = el.offsetHeight || 60;
-
   let top  = anchorRect.top  - ph - 8 + window.scrollY;
   let left = anchorRect.left + window.scrollX;
-
-  /* If above viewport, show below instead */
-  if (top < window.scrollY + margin) {
-    top = anchorRect.bottom + 8 + window.scrollY;
-  }
-  /* Clamp horizontal */
+  if (top < window.scrollY + margin) top = anchorRect.bottom + 8 + window.scrollY;
   if (left + pw > vw - margin) left = vw - margin - pw;
   if (left < margin) left = margin;
-
   el.style.top  = top  + 'px';
   el.style.left = left + 'px';
 }
@@ -1268,7 +1221,6 @@ function showLinkPopup(anchor) {
   linkPopupAnchor.href        = anchor.href;
   linkPopupAnchor.textContent = anchor.href.length > 36 ? anchor.href.slice(0,34)+'…' : anchor.href;
   linkPopup.classList.add('visible');
-  /* Position after making visible so offsetWidth is real */
   requestAnimationFrame(() => {
     const rect = anchor.getBoundingClientRect();
     positionFixed(linkPopup, rect);
@@ -1336,8 +1288,7 @@ function showCellMenu(td, x, y) {
     const vh = window.innerHeight;
     const mw = cellMenu.offsetWidth;
     const mh = cellMenu.offsetHeight;
-    let left = x;
-    let top  = y;
+    let left = x, top = y;
     if (left + mw > vw - 8) left = vw - mw - 8;
     if (left < 8) left = 8;
     if (top  + mh > vh + window.scrollY - 8) top = y - mh - 4;
@@ -1356,9 +1307,7 @@ editor.addEventListener('contextmenu', e => {
   if (td && editor.contains(td)) {
     e.preventDefault();
     showCellMenu(td, e.clientX + window.scrollX, e.clientY + window.scrollY);
-  } else {
-    hideCellMenu();
-  }
+  } else { hideCellMenu(); }
 });
 document.addEventListener('click', e => {
   if (!cellMenu.contains(e.target)) hideCellMenu();
@@ -1552,28 +1501,21 @@ function showToast(msg, isError=false) {
 }
 
 /* ══════════════════════════════════════════════
-   GIST HELPER
+   JSONBIN HELPER
 ══════════════════════════════════════════════ */
-async function createGist(title, postData) {
-  const res = await fetch('https://api.github.com/gists', {
+async function createBin(title, postData) {
+  const res = await fetch('https://api.jsonbin.io/v3/b', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-GitHub-Api-Version': '2022-11-28',
+      'X-Bin-Name': title,
+      'X-Bin-Private': 'false'
     },
-    body: JSON.stringify({
-      description: `پست جدید Maborai: ${title}`,
-      public: true,
-      files: {
-        'post.json': {
-          content: JSON.stringify([postData], null, 2)
-        }
-      }
-    })
+    body: JSON.stringify([postData])
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'خطا در ساخت Gist');
-  return data.html_url;
+  if (!res.ok) throw new Error(data.message || 'خطا در ساخت bin');
+  return `https://api.jsonbin.io/v3/b/${data.metadata.id}`;
 }
 
 /* ══════════════════════════════════════════════
@@ -1603,16 +1545,27 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
     const postData = { title, banner, content, authorName, authorAvatar, date, pinned: false };
 
     lbl.textContent = 'آپلود…';
-    const gistUrl = await createGist(title, postData);
+    const binUrl = await createBin(title, postData);
 
-    /* mailto — open email client */
-    const subject = encodeURIComponent(`پست جدید Maborai: ${title}`);
-    const body    = encodeURIComponent(
-      `نویسنده: ${authorName}\nتاریخ: ${date}\n\nلینک Gist:\n${gistUrl}`
+    /* ── Web3Forms ── */
+    lbl.textContent = 'ارسال ایمیل…';
+    const formData = new FormData();
+    formData.append('access_key', 'ba791533-8f31-4e44-9407-f5dc45b4d722');
+    formData.append('subject', `پست جدید Maborai: ${title}`);
+    formData.append('from_name', authorName);
+    formData.append('message',
+      `نویسنده: ${authorName}\nتاریخ: ${date}\n\nلینک JSONBin:\n${binUrl}`
     );
-    window.location.href = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
 
-    showToast('پست آماده‌ست! ایمیل رو ارسال کن ✓');
+    const w3res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData
+    });
+    const w3data = await w3res.json();
+    if (!w3data.success) throw new Error(w3data.message || 'خطا در ارسال ایمیل');
+
+    showToast('پست ارسال شد! ✓');
+    formDirty = false;
     setTimeout(() => {
       document.getElementById('f-title').value = '';
       document.getElementById('f-banner').value = '';
@@ -1630,6 +1583,19 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
 function escAttr(s) {
   return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+
+/* ══════════════════════════════════════════════
+   UNSAVED CHANGES WARNING
+══════════════════════════════════════════════ */
+let formDirty = false;
+editor.addEventListener('input', () => { formDirty = true; });
+document.getElementById('f-title').addEventListener('input', () => { formDirty = true; });
+
+window.addEventListener('beforeunload', e => {
+  if (!formDirty) return;
+  e.preventDefault();
+  e.returnValue = '';
+});
 </script>
 </body>
 </html>
