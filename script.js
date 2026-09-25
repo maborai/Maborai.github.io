@@ -1,31 +1,17 @@
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function escapeHtml(str = '') {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-function escapeAttr(str = '') {
-  return escapeHtml(str)
-    .replace(/"/g, '&quot;');
-}
+const root = document.documentElement;
+const themeToggle = document.getElementById('theme-toggle');
+const logoImg = document.getElementById('logo-img');
 
 
 /* =========================================================
    THEME
 ========================================================= */
 
-const root = document.documentElement;
-const themeToggle = document.getElementById('theme-toggle');
-const logoImg = document.getElementById('logo-img');
-
 function applyTheme(theme) {
 
   root.setAttribute('data-theme', theme);
+
+  localStorage.setItem('theme', theme);
 
   if (logoImg) {
     logoImg.src =
@@ -34,33 +20,41 @@ function applyTheme(theme) {
         : 'logo-light.png';
   }
 
-  localStorage.setItem('theme', theme);
 }
 
-const savedTheme = localStorage.getItem('theme');
 
-const systemPrefersDark =
-  window.matchMedia('(prefers-color-scheme: dark)').matches;
+const savedTheme =
+  localStorage.getItem('theme');
+
+const systemDark =
+  window.matchMedia(
+    '(prefers-color-scheme: dark)'
+  ).matches;
+
 
 applyTheme(
   savedTheme ||
-  (systemPrefersDark ? 'dark' : 'light')
+  (systemDark ? 'dark' : 'light')
 );
+
 
 if (themeToggle) {
 
-  themeToggle.addEventListener('click', () => {
+  themeToggle.addEventListener(
+    'click',
+    () => {
 
-    const current =
-      root.getAttribute('data-theme');
+      const current =
+        root.getAttribute('data-theme');
 
-    applyTheme(
-      current === 'dark'
-        ? 'light'
-        : 'dark'
-    );
+      applyTheme(
+        current === 'dark'
+          ? 'light'
+          : 'dark'
+      );
 
-  });
+    }
+  );
 
 }
 
@@ -81,21 +75,25 @@ const searchInput =
 const dateFilter =
   document.getElementById('date-filter');
 
-if (searchToggle && searchBar) {
 
-  searchToggle.addEventListener('click', () => {
+if (searchToggle) {
 
-    searchBar.classList.toggle('hidden');
+  searchToggle.addEventListener(
+    'click',
+    () => {
 
-    if (!searchBar.classList.contains('hidden')) {
+      searchBar.classList.toggle('hidden');
 
-      if (searchInput) {
+      if (
+        !searchBar.classList.contains('hidden')
+      ) {
+
         searchInput.focus();
+
       }
 
     }
-
-  });
+  );
 
 }
 
@@ -110,17 +108,6 @@ const listEl =
 const emptyEl =
   document.getElementById('empty-state');
 
-const PAGE_SIZE = 25;
-
-const PAGER_ENABLED = false;
-
-let allPosts = [];
-
-let currentPage = 1;
-
-let currentFiltered = [];
-
-
 const pagerEl =
   document.getElementById('pager');
 
@@ -134,6 +121,17 @@ const pageLabel =
   document.getElementById('page-label');
 
 
+const PAGE_SIZE = 25;
+
+const PAGER_ENABLED = false;
+
+let allPosts = [];
+
+let currentPage = 1;
+
+let currentFiltered = [];
+
+
 /* =========================================================
    LOAD POSTS
 ========================================================= */
@@ -142,55 +140,65 @@ async function loadPosts() {
 
   try {
 
-    const res =
-      await fetch('index.json', {
-        cache: 'no-store'
-      });
+    const response =
+      await fetch(
+        'index.json',
+        { cache: 'no-store' }
+      );
 
-    if (!res.ok) {
-      throw new Error('index.json not found');
+    if (!response.ok) {
+      throw new Error(
+        'index.json not found'
+      );
     }
 
     const data =
-      await res.json();
+      await response.json();
 
-    allPosts = Array.isArray(data)
-      ? data
-      : [];
+    allPosts =
+      Array.isArray(data)
+        ? data
+        : [];
 
-    allPosts.sort((a, b) => {
 
-      if (a.pinned && !b.pinned) {
-        return -1;
+    allPosts.sort(
+      (a, b) => {
+
+        if (
+          a.pinned &&
+          !b.pinned
+        ) {
+          return -1;
+        }
+
+        if (
+          !a.pinned &&
+          b.pinned
+        ) {
+          return 1;
+        }
+
+        return (
+          new Date(b.date) -
+          new Date(a.date)
+        );
+
       }
+    );
 
-      if (!a.pinned && b.pinned) {
-        return 1;
-      }
-
-      return new Date(b.date) -
-             new Date(a.date);
-
-    });
 
     render(allPosts);
 
-  } catch (err) {
+  } catch (error) {
 
-    console.error(err);
+    console.error(error);
 
-    if (listEl) {
-      listEl.innerHTML = '';
-    }
+    listEl.innerHTML = '';
 
-    if (emptyEl) {
+    emptyEl.hidden = false;
 
-      emptyEl.hidden = false;
-
-      emptyEl.textContent =
-        'Failed to load posts.';
-
-    }
+    emptyEl.textContent =
+      'Failed to load posts.';
 
   }
 
@@ -212,7 +220,9 @@ function formatDate(dateStr) {
         month: 'long',
         day: 'numeric'
       }
-    ).format(new Date(dateStr));
+    ).format(
+      new Date(dateStr)
+    );
 
   } catch {
 
@@ -240,32 +250,26 @@ function render(posts) {
 
 function renderPage() {
 
-  if (!listEl) return;
-
   listEl.innerHTML = '';
 
-  if (!currentFiltered.length) {
+  if (
+    !currentFiltered.length
+  ) {
 
-    if (emptyEl) {
+    emptyEl.hidden = false;
 
-      emptyEl.hidden = false;
+    emptyEl.textContent =
+      'No posts found.';
 
-      emptyEl.textContent =
-        'No posts found.';
-
-    }
-
-    if (pagerEl) {
-      pagerEl.hidden = true;
-    }
+    pagerEl.hidden = true;
 
     return;
 
   }
 
-  if (emptyEl) {
-    emptyEl.hidden = true;
-  }
+
+  emptyEl.hidden = true;
+
 
   const totalPages =
     Math.max(
@@ -276,15 +280,18 @@ function renderPage() {
       )
     );
 
+
   currentPage =
     Math.min(
       currentPage,
       totalPages
     );
 
+
   const start =
     (currentPage - 1) *
     PAGE_SIZE;
+
 
   const pagePosts =
     currentFiltered.slice(
@@ -292,49 +299,46 @@ function renderPage() {
       start + PAGE_SIZE
     );
 
-  const frag =
+
+  const fragment =
     document.createDocumentFragment();
 
-  pagePosts.forEach(post => {
 
-    frag.appendChild(
-      buildCard(post)
-    );
+  pagePosts.forEach(
+    post => {
 
-  });
+      fragment.appendChild(
+        buildCard(post)
+      );
 
-  listEl.appendChild(frag);
+    }
+  );
 
-  if (pagerEl) {
-    pagerEl.hidden =
-      !PAGER_ENABLED;
-  }
 
-  if (prevBtn) {
-    prevBtn.disabled =
-      currentPage <= 1;
-  }
+  listEl.appendChild(
+    fragment
+  );
 
-  if (nextBtn) {
-    nextBtn.disabled =
-      currentPage >= totalPages;
-  }
 
-  if (pageLabel) {
-    pageLabel.textContent =
-      `Page ${currentPage} of ${totalPages}`;
-  }
+  pagerEl.hidden =
+    !PAGER_ENABLED;
 
-  window.scrollTo({
-    top: 0,
-    behavior: 'instant'
-  });
+
+  prevBtn.disabled =
+    currentPage <= 1;
+
+  nextBtn.disabled =
+    currentPage >= totalPages;
+
+
+  pageLabel.textContent =
+    `Page ${currentPage} of ${totalPages}`;
 
 }
 
 
 /* =========================================================
-   BUILD POST
+   BUILD CARD
 ========================================================= */
 
 function buildCard(post) {
@@ -345,19 +349,27 @@ function buildCard(post) {
   card.className =
     'post-card';
 
+
   let bodyHtml = '';
+
 
   if (post.content) {
 
     bodyHtml =
       typeof DOMPurify !== 'undefined'
-        ? DOMPurify.sanitize(post.content)
+
+        ? DOMPurify.sanitize(
+            post.content
+          )
+
         : post.content;
 
   } else if (post.excerpt) {
 
     bodyHtml =
-      escapeHtml(post.excerpt);
+      escapeHtml(
+        post.excerpt
+      );
 
   }
 
@@ -378,13 +390,18 @@ function buildCard(post) {
         : ''
     }
 
+
     <h2 class="post-title">
-      ${escapeHtml(post.title || '')}
+      ${escapeHtml(
+        post.title || ''
+      )}
     </h2>
+
 
     <div class="post-body">
       ${bodyHtml}
     </div>
+
 
     <div class="post-footer">
 
@@ -395,7 +412,9 @@ function buildCard(post) {
             ? `
               <img
                 class="author-avatar"
-                src="${escapeAttr(post.authorAvatar)}"
+                src="${escapeAttr(
+                  post.authorAvatar
+                )}"
                 alt=""
                 loading="lazy"
                 onerror="this.style.display='none'"
@@ -405,15 +424,19 @@ function buildCard(post) {
         }
 
         <span class="author-name">
-          ${escapeHtml(post.authorName || '')}
+          ${escapeHtml(
+            post.authorName || ''
+          )}
         </span>
 
       </div>
+
 
       <span class="post-date">
 
         ${
           post.pinned
+
             ? `
               <svg
                 class="pin-icon"
@@ -424,9 +447,13 @@ function buildCard(post) {
               >
                 <path d="M12 17v5M8 3h8l-1 6 3 3v2H6v-2l3-3-1-6Z"/>
               </svg>
+
               Pinned post
             `
-            : formatDate(post.date)
+
+            : formatDate(
+                post.date
+              )
         }
 
       </span>
@@ -438,214 +465,41 @@ function buildCard(post) {
 
   setupCodeBlocks(card);
 
+
   return card;
 
 }
 
 
 /* =========================================================
-   CODE BLOCKS
-   No syntax highlighting
+   CODE BLOCK
+   No copy / no download
 ========================================================= */
 
 function setupCodeBlocks(container) {
 
-  const codeBlocks =
+  const blocks =
     container.querySelectorAll(
       'pre code'
     );
 
-  codeBlocks.forEach((code, index) => {
 
-    const pre =
-      code.closest('pre');
+  blocks.forEach(
+    code => {
 
-    if (!pre) return;
+      const pre =
+        code.closest('pre');
 
-
-    /* -----------------------------------------
-       Line numbers
-    ----------------------------------------- */
-
-    addLineNumbers(
-      pre,
-      code
-    );
+      if (!pre) return;
 
 
-    /* -----------------------------------------
-       Code dots
-    ----------------------------------------- */
-
-    if (
-      !pre.querySelector('.code-dots')
-    ) {
-
-      const dots =
-        document.createElement('div');
-
-      dots.className =
-        'code-dots';
-
-      dots.innerHTML = `
-        <span></span>
-        <span></span>
-        <span></span>
-      `;
-
-      pre.appendChild(dots);
+      addLineNumbers(
+        pre,
+        code
+      );
 
     }
-
-
-    /* -----------------------------------------
-       Buttons
-    ----------------------------------------- */
-
-    if (
-      !pre.querySelector('.code-actions')
-    ) {
-
-      const actions =
-        document.createElement('div');
-
-      actions.className =
-        'code-actions';
-
-
-      /* Copy */
-
-      const copyButton =
-        document.createElement('button');
-
-      copyButton.type =
-        'button';
-
-      copyButton.className =
-        'code-action';
-
-      copyButton.title =
-        'Copy code';
-
-      copyButton.innerHTML = `
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <rect
-            x="9"
-            y="9"
-            width="13"
-            height="13"
-            rx="2"
-          />
-
-          <path
-            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-          />
-        </svg>
-
-        <span>Copy</span>
-      `;
-
-
-      copyButton.addEventListener(
-        'click',
-        async () => {
-
-          const text =
-            code.textContent || '';
-
-          const success =
-            await copyText(text);
-
-          if (!success) return;
-
-          const oldHtml =
-            copyButton.innerHTML;
-
-          copyButton.innerHTML = `
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="m5 12 4 4L19 6"/>
-            </svg>
-
-            <span>Copied</span>
-          `;
-
-          setTimeout(() => {
-
-            copyButton.innerHTML =
-              oldHtml;
-
-          }, 1200);
-
-        }
-      );
-
-
-      /* Download */
-
-      const downloadButton =
-        document.createElement('button');
-
-      downloadButton.type =
-        'button';
-
-      downloadButton.className =
-        'code-action';
-
-      downloadButton.title =
-        'Download TXT';
-
-      downloadButton.innerHTML = `
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M12 3v12"/>
-          <path d="m7 10 5 5 5-5"/>
-          <path d="M5 21h14"/>
-        </svg>
-
-        <span>TXT</span>
-      `;
-
-
-      downloadButton.addEventListener(
-        'click',
-        () => {
-
-          downloadCode(
-            code.textContent || '',
-            `code-${index + 1}.txt`
-          );
-
-        }
-      );
-
-
-      actions.appendChild(
-        copyButton
-      );
-
-      actions.appendChild(
-        downloadButton
-      );
-
-      pre.appendChild(actions);
-
-    }
-
-  });
+  );
 
 }
 
@@ -654,16 +508,23 @@ function setupCodeBlocks(container) {
    LINE NUMBERS
 ========================================================= */
 
-function addLineNumbers(pre, code) {
+function addLineNumbers(
+  pre,
+  code
+) {
 
   if (
-    pre.querySelector('.line-number-list')
+    pre.querySelector(
+      '.line-number-list'
+    )
   ) {
     return;
   }
 
+
   const text =
     code.textContent || '';
+
 
   const lineCount =
     Math.max(
@@ -678,145 +539,29 @@ function addLineNumbers(pre, code) {
   numbers.className =
     'line-number-list';
 
+
   for (
     let i = 1;
     i <= lineCount;
     i++
   ) {
 
-    const line =
+    const number =
       document.createElement('span');
 
-    line.textContent =
+    number.textContent =
       i;
 
-    numbers.appendChild(line);
-
-  }
-
-  pre.appendChild(numbers);
-
-}
-
-
-/* =========================================================
-   COPY
-========================================================= */
-
-async function copyText(text) {
-
-  try {
-
-    if (
-      navigator.clipboard &&
-      window.isSecureContext
-    ) {
-
-      await navigator.clipboard.writeText(
-        text
-      );
-
-      return true;
-
-    }
-
-  } catch (err) {
-
-    console.warn(
-      'Clipboard API failed:',
-      err
+    numbers.appendChild(
+      number
     );
 
   }
 
 
-  return fallbackCopy(text);
-
-}
-
-
-function fallbackCopy(text) {
-
-  try {
-
-    const textarea =
-      document.createElement('textarea');
-
-    textarea.value =
-      text;
-
-    textarea.style.position =
-      'fixed';
-
-    textarea.style.opacity =
-      '0';
-
-    document.body.appendChild(
-      textarea
-    );
-
-    textarea.focus();
-
-    textarea.select();
-
-    const success =
-      document.execCommand('copy');
-
-    textarea.remove();
-
-    return success;
-
-  } catch {
-
-    return false;
-
-  }
-
-}
-
-
-/* =========================================================
-   DOWNLOAD TXT
-========================================================= */
-
-function downloadCode(
-  text,
-  filename
-) {
-
-  const blob =
-    new Blob(
-      [text],
-      {
-        type:
-          'text/plain;charset=utf-8'
-      }
-    );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const link =
-    document.createElement('a');
-
-  link.href = url;
-
-  link.download =
-    filename;
-
-  document.body.appendChild(
-    link
+  pre.appendChild(
+    numbers
   );
-
-  link.click();
-
-  link.remove();
-
-  setTimeout(() => {
-
-    URL.revokeObjectURL(url);
-
-  }, 1000);
 
 }
 
@@ -825,55 +570,48 @@ function downloadCode(
    PAGER
 ========================================================= */
 
-if (prevBtn) {
+prevBtn.addEventListener(
+  'click',
+  () => {
 
-  prevBtn.addEventListener(
-    'click',
-    () => {
+    if (currentPage > 1) {
 
-      if (currentPage > 1) {
+      currentPage--;
 
-        currentPage--;
-
-        renderPage();
-
-      }
+      renderPage();
 
     }
-  );
 
-}
+  }
+);
 
 
-if (nextBtn) {
+nextBtn.addEventListener(
+  'click',
+  () => {
 
-  nextBtn.addEventListener(
-    'click',
-    () => {
+    const totalPages =
+      Math.max(
+        1,
+        Math.ceil(
+          currentFiltered.length /
+          PAGE_SIZE
+        )
+      );
 
-      const totalPages =
-        Math.max(
-          1,
-          Math.ceil(
-            currentFiltered.length /
-            PAGE_SIZE
-          )
-        );
 
-      if (
-        currentPage < totalPages
-      ) {
+    if (
+      currentPage < totalPages
+    ) {
 
-        currentPage++;
+      currentPage++;
 
-        renderPage();
-
-      }
+      renderPage();
 
     }
-  );
 
-}
+  }
+);
 
 
 /* =========================================================
@@ -882,56 +620,56 @@ if (nextBtn) {
 
 function applyFilters() {
 
-  const q =
-    searchInput
-      ? searchInput.value
-          .trim()
-          .toLowerCase()
-      : '';
+  const query =
+    searchInput.value
+      .trim()
+      .toLowerCase();
 
-  const dateVal =
-    dateFilter
-      ? dateFilter.value
-      : '';
+
+  const date =
+    dateFilter.value;
 
 
   const filtered =
-    allPosts.filter(post => {
+    allPosts.filter(
+      post => {
 
-      const matchesQuery =
-        !q ||
+        const matchesQuery =
+          !query ||
 
-        (post.title || '')
-          .toLowerCase()
-          .includes(q) ||
+          (post.title || '')
+            .toLowerCase()
+            .includes(query) ||
 
-        (post.excerpt || '')
-          .toLowerCase()
-          .includes(q) ||
+          (post.excerpt || '')
+            .toLowerCase()
+            .includes(query) ||
 
-        (post.content || '')
-          .toLowerCase()
-          .includes(q) ||
+          (post.content || '')
+            .toLowerCase()
+            .includes(query) ||
 
-        (post.authorName || '')
-          .toLowerCase()
-          .includes(q);
+          (post.authorName || '')
+            .toLowerCase()
+            .includes(query);
 
 
-      const matchesDate =
-        !dateVal ||
-        (
-          post.date &&
-          post.date.slice(0, 10) === dateVal
+        const matchesDate =
+          !date ||
+
+          (
+            post.date &&
+            post.date.slice(0, 10) === date
+          );
+
+
+        return (
+          matchesQuery &&
+          matchesDate
         );
 
-
-      return (
-        matchesQuery &&
-        matchesDate
-      );
-
-    });
+      }
+    );
 
 
   render(filtered);
@@ -939,21 +677,48 @@ function applyFilters() {
 }
 
 
-if (searchInput) {
+searchInput.addEventListener(
+  'input',
+  applyFilters
+);
 
-  searchInput.addEventListener(
-    'input',
-    applyFilters
-  );
+
+dateFilter.addEventListener(
+  'change',
+  applyFilters
+);
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(str = '') {
+
+  return String(str)
+    .replace(
+      /&/g,
+      '&amp;'
+    )
+    .replace(
+      /</g,
+      '&lt;'
+    )
+    .replace(
+      />/g,
+      '&gt;'
+    );
 
 }
 
-if (dateFilter) {
 
-  dateFilter.addEventListener(
-    'change',
-    applyFilters
-  );
+function escapeAttr(str = '') {
+
+  return escapeHtml(str)
+    .replace(
+      /"/g,
+      '&quot;'
+    );
 
 }
 
