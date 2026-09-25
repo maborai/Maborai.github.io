@@ -342,7 +342,17 @@ button{
   overflow-wrap: anywhere;
 }
 
+.post-body > :first-child{
+  margin-top: 0;
+}
+
+.post-body > :last-child{
+  margin-bottom: 0;
+}
+
 .post-body img{
+  max-width: 100%;
+  height: auto;
   border-radius: var(--radius);
   margin: 14px 0;
 }
@@ -359,6 +369,25 @@ button{
 
 .post-body p{
   margin: 0 0 14px;
+}
+
+.post-body strong{
+  font-weight: 700;
+}
+
+.post-body em{
+  font-style: italic;
+}
+
+.post-body mark{
+  background: var(--text);
+  color: var(--bg);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.post-body del{
+  color: var(--text-dim);
 }
 
 .post-body h1,
@@ -459,11 +488,13 @@ button{
   background: var(--bg-raised);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 1px 7px;
+  padding: 2px 7px;
   border-radius: 5px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: .88em;
   line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 
@@ -475,7 +506,7 @@ button{
   position: relative;
   direction: ltr;
   text-align: left;
-  margin: 22px 0;
+  margin: 24px 0;
   padding: 48px 0 0;
   background: #0d0f12;
   border: 1px solid #252a30;
@@ -500,6 +531,7 @@ button{
   height: 46px;
   background: #11151a;
   border-bottom: 1px solid #252a30;
+  z-index: 0;
 }
 
 .post-body pre::after{
@@ -512,10 +544,12 @@ button{
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.2px;
+  z-index: 1;
 }
 
 .post-body pre code{
   display: block;
+  position: relative;
   overflow-x: auto;
   padding: 14px 18px 18px 58px;
   min-height: 50px;
@@ -524,6 +558,7 @@ button{
   color: #e6edf3;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
                "Liberation Mono", monospace;
+  background: transparent;
 }
 
 /* شماره خطوط */
@@ -533,8 +568,9 @@ button{
 
 .post-body pre code > span{
   display: block;
-  counter-increment: line;
   position: relative;
+  counter-increment: line;
+  min-height: 1.75em;
 }
 
 .post-body pre code > span::before{
@@ -545,19 +581,21 @@ button{
   text-align: right;
   color: #484f58;
   user-select: none;
-}
-
-/* در صورتی که کد بدون span باشد */
-.post-body pre[data-lines]{
-  padding-left: 0;
+  pointer-events: none;
 }
 
 .post-body pre[data-lines] code{
   padding-left: 58px;
 }
 
-/* اسکرول‌بار */
+/* اگر شماره خط با span ساخته نشده باشد */
+.post-body pre[data-lines] code > span{
+  display: block;
+}
+
+/* اسکرول‌بار کد */
 .post-body pre code::-webkit-scrollbar{
+  width: 7px;
   height: 7px;
 }
 
@@ -574,14 +612,24 @@ button{
   background: #484f58;
 }
 
-/* نقاط بالای باکس */
+/* Firefox */
+.post-body pre code{
+  scrollbar-width: thin;
+  scrollbar-color: #30363d transparent;
+}
+
+
+/* =========================================================
+   CODE WINDOW DOTS
+========================================================= */
+
 .post-body pre .code-dots{
   position: absolute;
   top: 16px;
   left: 18px;
   display: flex;
   gap: 6px;
-  z-index: 2;
+  z-index: 3;
 }
 
 .post-body pre .code-dots span{
@@ -603,7 +651,11 @@ button{
   background: #28c840;
 }
 
-/* دکمه‌های کد */
+
+/* =========================================================
+   CODE ACTIONS
+========================================================= */
+
 .code-actions{
   position: absolute;
   top: 8px;
@@ -611,11 +663,12 @@ button{
   display: flex;
   align-items: center;
   gap: 5px;
-  z-index: 3;
+  z-index: 4;
 }
 
 .code-action{
   height: 29px;
+  min-width: 29px;
   padding: 0 9px;
   display: inline-flex;
   align-items: center;
@@ -631,7 +684,8 @@ button{
   transition:
     background .15s ease,
     color .15s ease,
-    border-color .15s ease;
+    border-color .15s ease,
+    transform .1s ease;
 }
 
 .code-action:hover{
@@ -640,14 +694,33 @@ button{
   color: #e6edf3;
 }
 
+.code-action:active{
+  transform: translateY(1px);
+}
+
 .code-action svg{
   width: 13px;
   height: 13px;
+  flex-shrink: 0;
 }
 
-/* رنگ‌های syntax */
+.code-action span{
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   CODE SYNTAX COLORS
+========================================================= */
+
 .post-body pre .token.comment,
 .post-body pre .comment{
+  color: #6e7681;
+}
+
+.post-body pre .token.prolog,
+.post-body pre .token.doctype,
+.post-body pre .token.cdata{
   color: #6e7681;
 }
 
@@ -656,8 +729,18 @@ button{
   color: #ff7b72;
 }
 
+.post-body pre .token.control,
+.post-body pre .control{
+  color: #ff7b72;
+}
+
 .post-body pre .token.string,
 .post-body pre .string{
+  color: #a5d6ff;
+}
+
+.post-body pre .token.char,
+.post-body pre .char{
   color: #a5d6ff;
 }
 
@@ -706,6 +789,26 @@ button{
   color: #a5d6ff;
 }
 
+.post-body pre .token.punctuation,
+.post-body pre .punctuation{
+  color: #e6edf3;
+}
+
+.post-body pre .token.variable,
+.post-body pre .variable{
+  color: #ffa657;
+}
+
+.post-body pre .token.regex,
+.post-body pre .regex{
+  color: #a5d6ff;
+}
+
+.post-body pre .token.important,
+.post-body pre .important{
+  color: #ffa657;
+}
+
 
 /* =========================================================
    TABLE
@@ -713,13 +816,18 @@ button{
 
 .post-body table{
   width: 100%;
+  max-width: 100%;
+  margin: 24px 0;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 24px 0;
-  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg-raised);
+  overflow: hidden;
+}
+
+.post-body thead{
+  background: var(--bg);
 }
 
 .post-body th,
@@ -734,9 +842,12 @@ button{
 }
 
 .post-body th{
-  background: var(--bg);
   color: var(--text);
   font-weight: 700;
+}
+
+.post-body td{
+  color: var(--text);
 }
 
 .post-body tr:last-child td{
@@ -760,17 +871,30 @@ button{
   font-size: 12px;
 }
 
+.post-body table a{
+  white-space: nowrap;
+}
+
 @media (max-width: 640px){
+
   .post-body table{
     display: block;
+    width: 100%;
     overflow-x: auto;
     white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .post-body table th,
+  .post-body table td{
+    padding: 9px 12px;
+    font-size: 13px;
   }
 }
 
 
 /* =========================================================
-   LATEX
+   LATEX / KATEX
 ========================================================= */
 
 .post-body .katex{
@@ -781,6 +905,14 @@ button{
   display: inline-block;
   vertical-align: middle;
   padding: 0 3px;
+  direction: ltr;
+}
+
+.post-body .katex-display{
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
 }
 
 .post-body .katex-block{
@@ -791,24 +923,59 @@ button{
   overflow-x: auto;
   overflow-y: hidden;
   text-align: center;
+  direction: ltr;
   background: var(--bg-raised);
   border: 1px solid var(--border);
   border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .post-body .katex-block .katex{
   font-size: 1.15em;
 }
 
-.post-body .katex-display{
-  margin: 0;
-}
-
 .post-body .katex-block::-webkit-scrollbar{
+  width: 6px;
   height: 6px;
 }
 
+.post-body .katex-block::-webkit-scrollbar-track{
+  background: transparent;
+}
+
 .post-body .katex-block::-webkit-scrollbar-thumb{
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.post-body .katex-block::-webkit-scrollbar-thumb:hover{
+  background: var(--text-faint);
+}
+
+/* MathJax */
+.post-body mjx-container{
+  direction: ltr;
+}
+
+.post-body mjx-container[display="true"]{
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  margin: 24px 0;
+  padding: 16px 12px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-body mjx-container[display="true"]::-webkit-scrollbar{
+  height: 6px;
+}
+
+.post-body mjx-container[display="true"]::-webkit-scrollbar-thumb{
   background: var(--border);
   border-radius: 999px;
 }
@@ -862,11 +1029,6 @@ button{
   margin-top: 7px;
 }
 
-.post-body img{
-  max-width: 100%;
-  height: auto;
-}
-
 .post-body iframe{
   min-height: 300px;
   background: var(--bg-raised);
@@ -874,6 +1036,40 @@ button{
 
 .post-body video{
   background: #000;
+}
+
+
+/* =========================================================
+   DETAILS / SUMMARY
+========================================================= */
+
+.post-body details{
+  margin: 18px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-raised);
+  overflow: hidden;
+}
+
+.post-body summary{
+  padding: 12px 14px;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 700;
+  user-select: none;
+}
+
+.post-body summary:hover{
+  background: var(--bg);
+}
+
+.post-body details > :not(summary){
+  margin-left: 14px;
+  margin-right: 14px;
+}
+
+.post-body details > :last-child{
+  margin-bottom: 14px;
 }
 
 
@@ -999,10 +1195,17 @@ input:focus-visible{
   .post-body pre{
     font-size: 12px;
     border-radius: 8px;
+    margin-left: -4px;
+    margin-right: -4px;
   }
 
   .post-body pre code{
     padding-left: 50px;
+  }
+
+  .post-body pre code > span::before{
+    right: calc(100% + 10px);
+    width: 24px;
   }
 
   .code-actions{
@@ -1011,6 +1214,7 @@ input:focus-visible{
 
   .code-action{
     width: 29px;
+    min-width: 29px;
     padding: 0;
   }
 
@@ -1020,6 +1224,10 @@ input:focus-visible{
 
   .post-body .katex-block{
     padding: 14px 10px;
+  }
+
+  .post-body mjx-container[display="true"]{
+    padding: 14px 8px;
   }
 }
 
