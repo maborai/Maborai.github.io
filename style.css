@@ -35,7 +35,7 @@
   --table-head:   #181818;
   --table-hover:  #151515;
 
-  --quote-bg:     #101010;
+  --quote-bg:     #141414;
   --quote-border: #555555;
 
   --latex-bg:     #101010;
@@ -49,15 +49,15 @@
   --text-dim:     #666666;
   --text-faint:   #a0a0a0;
 
-  --code-bg:      #f3f3f3;
-  --code-border:  #dddddd;
-  --code-text:    #222222;
+  --code-bg:      #f0f0f0;
+  --code-border:  #d0d0d0;
+  --code-text:    #1a1a1a;
 
   --table-head:   #f0f0f0;
   --table-hover:  #f8f8f8;
 
-  --quote-bg:     #f7f7f7;
-  --quote-border: #999999;
+  --quote-bg:     #eef2ff;
+  --quote-border: #7b8cde;
 
   --latex-bg:     #f7f7f7;
 }
@@ -102,7 +102,7 @@ button {
   position: sticky;
   top: 0;
   background: var(--bg);
-  z-index: 20; /* raised from 10 so header stays above popups/dropdowns */
+  z-index: 20;
 }
 
 .brand {
@@ -165,7 +165,7 @@ button {
   font-weight: 600;
   white-space: nowrap;
   transition: background .15s ease;
-  margin-inline-end: 4px; /* logical property instead of margin-right */
+  margin-inline-end: 4px;
 }
 
 .btn-new:hover {
@@ -254,7 +254,7 @@ button {
   margin-bottom: 20px;
   background: var(--bg-raised);
   pointer-events: none;
-  user-select: none; /* standard; -webkit-user-drag has no spec equivalent */
+  user-select: none;
 }
 
 .post-title {
@@ -301,7 +301,7 @@ button {
 .post-date {
   font-size: 13px;
   color: var(--text-faint);
-  margin-inline-start: auto; /* was margin-inline-start already – kept */
+  margin-inline-start: auto;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -387,10 +387,11 @@ button {
 
 .post-body blockquote {
   background: var(--quote-bg);
-  border-inline-end: 3px solid var(--quote-border); /* logical: respects RTL/LTR */
+  border-inline-end: 3px solid var(--quote-border);
+  border-inline-start: none;
   margin: 18px 0;
-  padding: 12px 16px;
-  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 12px 16px 12px 12px;
+  border-radius: var(--radius) 0 0 var(--radius);
   color: var(--text-dim);
   font-style: italic;
 }
@@ -445,7 +446,7 @@ button {
 
 .post-body ul,
 .post-body ol {
-  padding-inline-start: 26px; /* logical property: works for both RTL and LTR */
+  padding-inline-start: 26px;
   margin: 10px 0 18px;
 }
 
@@ -484,7 +485,7 @@ button {
 .post-body td,
 .editor-body th,
 .editor-body td {
-  border-inline-start: 1px solid var(--border); /* logical */
+  border-inline-start: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 10px 12px;
   font-family: var(--font-fa);
@@ -513,7 +514,7 @@ button {
 .post-body td:last-child,
 .editor-body th:last-child,
 .editor-body td:last-child {
-  border-inline-start: none; /* logical */
+  border-inline-start: none;
 }
 
 .post-body tbody tr:hover td,
@@ -572,7 +573,7 @@ button {
 
 .editor-body {
   min-height: 300px;
-  max-height: min(560px, 60vh); /* vh fallback for small/zoomed screens */
+  max-height: min(560px, 60vh);
   overflow-y: auto;
   background: var(--bg-raised);
   border: 1px solid var(--border);
@@ -622,10 +623,11 @@ button {
 
 .editor-body blockquote {
   background: var(--quote-bg);
-  border-inline-end: 3px solid var(--quote-border); /* logical */
+  border-inline-end: 3px solid var(--quote-border);
+  border-inline-start: none;
   margin: 10px 0;
-  padding: 8px 14px;
-  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 8px 14px 8px 10px;
+  border-radius: var(--radius) 0 0 var(--radius);
   color: var(--text-dim);
   font-style: italic;
 }
@@ -669,7 +671,7 @@ button {
 
 .editor-body ul,
 .editor-body ol {
-  padding-inline-start: 24px; /* logical */
+  padding-inline-start: 24px;
   margin: 6px 0 14px;
 }
 
@@ -696,7 +698,7 @@ button {
 
 .editor-body td,
 .editor-body th {
-  border-inline-start: 1px solid var(--border); /* logical */
+  border-inline-start: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 8px 12px;
   font-size: 14px;
@@ -715,7 +717,7 @@ button {
 .editor-body tr:last-child th { border-bottom: none; }
 
 .editor-body td:last-child,
-.editor-body th:last-child { border-inline-start: none; } /* logical */
+.editor-body th:last-child { border-inline-start: none; }
 
 .editor-body tr:hover td { background: var(--table-hover); }
 
@@ -786,7 +788,7 @@ button {
 }
 
 .link-popup-url a {
-  color: var(--color-link); /* was hardcoded #4a9eff */
+  color: var(--color-link);
   text-decoration: none;
 }
 
@@ -808,7 +810,7 @@ button {
 .link-popup-btn:hover { background: var(--border); }
 
 .link-popup-btn.danger {
-  border-color: var(--color-danger); /* was hardcoded */
+  border-color: var(--color-danger);
   color: var(--color-danger);
 }
 
@@ -1123,10 +1125,39 @@ select:focus-visible,
   stroke-width: 2;
 }
 
+/* ---------- Light theme code explicit overrides ---------- */
+/* Forces correct colors regardless of browser UA stylesheet */
+
+[data-theme="light"] .post-body pre,
+[data-theme="light"] .editor-body pre {
+  background: var(--code-bg) !important;
+  color: var(--code-text) !important;
+  border-color: var(--code-border) !important;
+}
+
+[data-theme="light"] .post-body code,
+[data-theme="light"] .editor-body code {
+  background: var(--code-bg) !important;
+  color: var(--code-text) !important;
+  border-color: var(--code-border) !important;
+}
+
+[data-theme="light"] .post-body pre code,
+[data-theme="light"] .editor-body pre code {
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+}
+
+[data-theme="light"] .code-label {
+  background: var(--code-bg) !important;
+  color: var(--text-faint) !important;
+  border-color: var(--code-border) !important;
+}
+
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  /* Only disable non-essential animations; keep instant state transitions */
   *,
   *::before,
   *::after {
